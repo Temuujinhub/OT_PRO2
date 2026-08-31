@@ -5,8 +5,29 @@ import { useLang } from '../../i18n';
 import { useAuth } from '../../App';
 import { useToast, Field } from '../../ui';
 
+export function LangTop() {
+  const { lang, setLang } = useLang();
+  return (
+    <div className="lang-top lang-select">
+      <select value={lang} onChange={e => setLang(e.target.value)} aria-label="Language">
+        <option value="mn">🇲🇳 Монгол</option>
+        <option value="en">🇬🇧 English</option>
+      </select>
+    </div>
+  );
+}
+
+export function AuthLogo() {
+  return (
+    <div className="logo">
+      <img src="/ot-logo.png" alt="Оюу Толгой" />
+      <div>Оюу Толгой<span>OASIS — Supplier System v2.0</span></div>
+    </div>
+  );
+}
+
 export default function Login() {
-  const { t, lang, setLang } = useLang();
+  const { t } = useLang();
   const { setSession } = useAuth();
   const { toast } = useToast();
   const nav = useNavigate();
@@ -50,46 +71,47 @@ export default function Login() {
         </div>
       </div>
       <div className="auth-panel">
-        <div className="logo">
-          <img src="/ot-logo.svg" alt="OT" />
-          <div>Оюу Толгой<br /><span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 400 }}>OASIS v2.0</span></div>
-        </div>
+        <LangTop />
+        <AuthLogo />
         <h1>{t('welcome')}</h1>
         <div className="sub">{t('login_sub')}</div>
         {!otpMode ? (
           <form onSubmit={doLogin}>
-            <Field label={t('email')} required>
+            <div className="auth-divider">{t('login_title')}</div>
+            <div className="field">
+              <label>{t('email')}</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} autoFocus required placeholder="name@company.mn" />
-            </Field>
-            <Field label={t('password')} required>
-              <div style={{ position: 'relative' }}>
-                <input type={show ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required />
-                <span style={{ position: 'absolute', right: 10, top: 9, cursor: 'pointer' }} onClick={() => setShow(s => !s)}>{show ? '🙈' : '👁'}</span>
-              </div>
-            </Field>
-            <div className="row between mb16">
-              <label className="checkbox"><input type="checkbox" /> {t('remember')}</label>
-              <Link to="/forgot">{t('forgot')}</Link>
+              <span className="tail-ico">✉</span>
             </div>
-            <button className="btn" style={{ width: '100%', justifyContent: 'center', padding: 12 }} disabled={busy}>{t('login_title')}</button>
+            <div className="field">
+              <label>{t('password')}</label>
+              <input type={show ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••••" />
+              <span className="tail-ico" onClick={() => setShow(s => !s)}>{show ? '👁' : '🔒'}</span>
+            </div>
+            <div className="row between mb16" style={{ marginTop: 4 }}>
+              <label className="checkbox"><input type="checkbox" defaultChecked /> {t('remember')}</label>
+              <Link to="/forgot" style={{ fontSize: 13 }}>{t('forgot')}</Link>
+            </div>
+            <button className="btn btn-login" disabled={busy}>{busy ? '…' : t('login')}</button>
           </form>
         ) : (
           <form onSubmit={doOtp}>
-            <Field label="OTP" hint={t('otp_prompt')}>
-              <input value={otp} onChange={e => setOtp(e.target.value)} maxLength={6} autoFocus style={{ letterSpacing: 6, fontSize: 20, textAlign: 'center' }} />
-            </Field>
-            <button className="btn" style={{ width: '100%', justifyContent: 'center' }} disabled={busy}>{t('confirm')}</button>
+            <div className="auth-divider">OTP</div>
+            <div className="field">
+              <label>{t('otp_prompt')}</label>
+              <input value={otp} onChange={e => setOtp(e.target.value)} maxLength={6} autoFocus
+                style={{ letterSpacing: 8, fontSize: 22, textAlign: 'center' }} />
+            </div>
+            <button className="btn btn-login" disabled={busy}>{t('confirm')}</button>
           </form>
         )}
-        <p className="mut" style={{ marginTop: 22 }}>
-          {t('no_account')} <Link to="/register" className="bold">{t('register')}</Link>
+        <p style={{ marginTop: 24, fontSize: 13.5 }}>
+          <span className="mut">{t('no_account')}</span> <Link to="/register" className="bold">{t('register')}</Link>
         </p>
-        <div className="row" style={{ marginTop: 8 }}>
-          <button className="btn ghost sm" onClick={() => setLang(lang === 'mn' ? 'en' : 'mn')}>🌐 {lang === 'mn' ? 'English' : 'Монгол'}</button>
-        </div>
-        <p className="mut" style={{ marginTop: 26, fontSize: 11 }}>
-          Демо хэрэглэгчид (нууц үг: Oasis@2026): supplier@test.mn · buyer@oasis.mn · admin@oasis.mn · approver@oasis.mn · enduser@oasis.mn
+        <p className="mut" style={{ marginTop: 18, fontSize: 11 }}>
+          Демо (нууц үг: Oasis@2026): supplier@test.mn · buyer@oasis.mn · admin@oasis.mn · approver@oasis.mn · enduser@oasis.mn
         </p>
+        <div className="foot-copy">© 2026 OYU TOLGOI LLC. Зохиогчийн эрх хамгаалагдсан</div>
       </div>
     </div>
   );

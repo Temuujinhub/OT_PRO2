@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { post } from '../../api';
 import { useLang } from '../../i18n';
 import { useToast, Field } from '../../ui';
+import { AuthLogo, LangTop } from './Login';
 
 export default function Forgot() {
   const { t } = useLang();
@@ -34,7 +35,8 @@ export default function Forgot() {
     <div className="auth-shell">
       <div className="auth-photo"><div className="caption"><h2>OASIS v2</h2></div></div>
       <div className="auth-panel">
-        <div className="logo"><img src="/ot-logo.svg" alt="OT" /><div>Оюу Толгой</div></div>
+        <LangTop />
+        <AuthLogo />
         <h1>{t('forgot')}</h1>
         {step === 1 ? (
           <form onSubmit={start}>

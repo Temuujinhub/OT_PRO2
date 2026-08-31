@@ -502,6 +502,24 @@ export async function seed() {
       [uid[email]]);
   }
 
+  // ---------- integration configs (spec section 12) ----------
+  await q(`INSERT INTO integration_config(code, name_mn, name_en, category, enabled, endpoint, username, sync_interval_min, extra_json) VALUES
+    ('KHUR','ХУР систем (байгууллага)','KHUR state registry','government', true,'https://xyp.gov.mn/api/company','oasis_service', null,'{"consent_required":true,"fields":["registry_no","name","legal_form","director"]}'),
+    ('DAN','ДАН нэвтрэлт','DAN authentication','government', false,'https://sso.gov.mn/oauth','', null,'{"scopes":["citizen_basic"]}'),
+    ('SAP_PNOW','SAP / ProcurementNow','SAP / PNow','erp', true,'https://sap.ot.mn/api/pr','oasis_int', 60,'{"inbound":["PR","material","vendor"],"outbound":["award_summary"],"replay_protection":true}'),
+    ('MSSQL_SYNC','Гуравдагч MSSQL sync','Third-party MSSQL sync','data', false,'mssql://sync.ot.mn:1433/oasis_mirror','sync_user', 240,'{"tables":["supplier","tender","award"]}'),
+    ('SMTP','Имэйл (SMTP)','Email SMTP','messaging', true,'smtp://mail.ot.mn:587','noreply@oasis.ot.mn', null,'{"from":"noreply@oasis.ot.mn","retry":3}'),
+    ('SMS','SMS gateway','SMS gateway','messaging', false,'https://sms.mobicom.mn/api','', null,'{}'),
+    ('ANTHROPIC','Claude AI (тайлан, туслах)','Claude AI','ai', true,'https://api.anthropic.com','', null,'{"model":"claude-sonnet-4-5","features":["report_summary","hub_assistant"]}')
+    ON CONFLICT DO NOTHING`);
+  await q(`INSERT INTO integration_log(code, direction, action, status, detail, duration_ms) VALUES
+    ('KHUR','out','company_lookup','success','registry 5029342 → Монгол Машин Механизм ХХК', 320),
+    ('KHUR','out','company_lookup','success','registry 2887101 → Говь Логистик ХХК', 298),
+    ('SAP_PNOW','in','pr_import','success','PR-778001..PR-880002: 9 мөр татагдлаа', 1240),
+    ('SMTP','out','send_email','success','tender invitation batch: 5 имэйл', 890),
+    ('SAP_PNOW','out','award_summary','success','RFQ-2026-00004 award → SAP', 640),
+    ('KHUR','out','company_lookup','failure','registry 9999999: ХУР-д олдсонгүй', 305)`);
+
   await q(`INSERT INTO audit_event(actor_name, action, entity_type, entity_id, after_summary)
            VALUES ('system','seed_completed','system','0','Demo data seeded')`);
 }

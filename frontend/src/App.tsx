@@ -35,6 +35,7 @@ import AdmDD from './pages/admin/DD';
 import AdmReports from './pages/admin/Reports';
 import AdmUsers from './pages/admin/Users';
 import AdmMasterData from './pages/admin/MasterData';
+import AdmIntegrations from './pages/admin/Integrations';
 import AdmTranslations from './pages/admin/Translations';
 import AdmAudit from './pages/admin/Audit';
 import AdmSupport from './pages/admin/Support';
@@ -84,7 +85,7 @@ function Shell({ children }: any) {
     <div className="shell">
       <div className={`sidebar ${open ? 'open' : ''}`} onClick={() => setOpen(false)}>
         <div className="brand">
-          <img src="/ot-logo.svg" alt="OT" />
+          <img src="/ot-logo.png" alt="Оюу Толгой" />
           <div><div className="t1">Оюу Толгой</div><div className="t2">OASIS v2 — Supplier System</div></div>
         </div>
         <div className="nav">
@@ -115,6 +116,7 @@ function Shell({ children }: any) {
             <div className="nav-sect">System</div>
             <NavItem to="/admin/users" ico="👥" color="var(--blue)" label={t('nav_users')} />
             <NavItem to="/admin/masterdata" ico="⚙️" color="var(--ink-soft)" label={t('nav_masterdata')} />
+            <NavItem to="/admin/integrations" ico="🔌" color="var(--green)" label={t('nav_integrations')} />
             <NavItem to="/admin/translations" ico="🌐" color="var(--purple)" label={t('nav_translations')} />
             <NavItem to="/admin/audit" ico="🧾" color="var(--ink)" label={t('nav_audit')} />
           </>)}
@@ -130,9 +132,12 @@ function Shell({ children }: any) {
           <div className="crumb">
             {isSupplier ? (org ? `${org.name_mn}${org.vendor_no ? ' · ' + org.vendor_no : ''}` : '') : `${user.name} · ${user.role}`}
           </div>
-          <button className="btn sec sm" onClick={() => setLang(lang === 'mn' ? 'en' : 'mn')}>
-            {lang === 'mn' ? 'EN' : 'МН'}
-          </button>
+          <div className="lang-select">
+            <select value={lang} onChange={e => setLang(e.target.value)} aria-label="Language">
+              <option value="mn">🇲🇳 МН</option>
+              <option value="en">🇬🇧 EN</option>
+            </select>
+          </div>
           <Link to={isSupplier ? '/supplier/notifications' : '/admin/messages'} style={{ position: 'relative', fontSize: 18 }}>
             🔔{unread > 0 && <span className="chip orange" style={{ position: 'absolute', top: -6, right: -12, padding: '0 6px' }}>{unread}</span>}
           </Link>
@@ -217,6 +222,7 @@ function AppRoutes() {
         <Route path="/admin/reports" element={<Protected internal><AdmReports /></Protected>} />
         <Route path="/admin/users" element={<Protected internal><AdmUsers /></Protected>} />
         <Route path="/admin/masterdata" element={<Protected internal><AdmMasterData /></Protected>} />
+        <Route path="/admin/integrations" element={<Protected internal><AdmIntegrations /></Protected>} />
         <Route path="/admin/translations" element={<Protected internal><AdmTranslations /></Protected>} />
         <Route path="/admin/audit" element={<Protected internal><AdmAudit /></Protected>} />
         <Route path="/admin/support" element={<Protected internal><AdmSupport /></Protected>} />

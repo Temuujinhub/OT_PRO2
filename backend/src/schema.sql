@@ -684,6 +684,31 @@ CREATE TABLE IF NOT EXISTS translation (
   PRIMARY KEY (key, lang)
 );
 
+-- ===================== INTEGRATIONS ==================================
+CREATE TABLE IF NOT EXISTS integration_config (
+  code        TEXT PRIMARY KEY,   -- KHUR | DAN | SAP_PNOW | MSSQL_SYNC | SMTP | ANTHROPIC | SMS
+  name_mn     TEXT NOT NULL, name_en TEXT,
+  category    TEXT NOT NULL DEFAULT 'external', -- government | erp | messaging | ai | data
+  enabled     BOOLEAN NOT NULL DEFAULT false,
+  endpoint    TEXT, username TEXT, api_key TEXT,
+  sync_interval_min INT,
+  extra_json  JSONB NOT NULL DEFAULT '{}',
+  last_test_at TIMESTAMPTZ, last_test_status TEXT, last_test_message TEXT,
+  updated_by  INT, updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS integration_log (
+  id BIGSERIAL PRIMARY KEY,
+  code TEXT NOT NULL,
+  direction TEXT NOT NULL DEFAULT 'out', -- in | out
+  action TEXT NOT NULL,
+  status TEXT NOT NULL, -- success | failure
+  detail TEXT,
+  duration_ms INT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_intlog ON integration_log(code, created_at);
+
 -- ========================== AUDIT ====================================
 CREATE TABLE IF NOT EXISTS audit_event (
   id BIGSERIAL PRIMARY KEY,

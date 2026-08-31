@@ -158,6 +158,98 @@ r.put('/settings/:key', requireRole('SystemAdmin'), async (req, res) => {
   res.json({ ok: true });
 });
 
+// ---- Integrations (spec section 12 — ХУР/ДАН, SAP/PNow, MSSQL, Email, AI) ----
+function maskKey(k: string | null) {
+  if (!k) return null;
+  return k.length <= 8 ? '••••' : k.slice(0, 4) + '••••••••' + k.slice(-4);
+}
+
+r.get('/integrations', async (_req, res) => {
+  const rows = await q('SELECT * FROM integration_config ORDER BY category, code');
+  rows.forEach(x => { x.api_key_masked = maskKey(x.api_key); delete x.api_key; });
+  res.json(rows);
+});
+
+r.put('/integrations/:code', requireRole('SystemAdmin'), async (req, res) => {
+  const b = req.body || {};
+  const cur = await q1('SELECT * FROM integration_config WHERE code=$1', [req.params.code]);
+  if (!cur) return res.status(404).json({ error: 'not_found' });
+  await q(
+    `UPDATE integration_config SET enabled=COALESCE($1,enabled), endpoint=COALESCE($2,endpoint),
+        username=COALESCE($3,username), api_key=COALESCE($4,api_key),
+        sync_interval_min=$5, extra_json=COALESCE($6,extra_json), updated_by=$7, updated_at=now()
+     WHERE code=$8`,
+    [b.enabled, b.endpoint, b.username, b.api_key || null,
+     b.sync_interval_min ?? cur.sync_interval_min, b.extra_json ? JSON.stringify(b.extra_json) : null,
+     req.user!.id, cur.code]);
+  await audit(req, 'integration_updated', 'integration', cur.code,
+    { before: `enabled=${cur.enabled}`, after: `enabled=${b.enabled ?? cur.enabled}` });
+  res.json({ ok: true });
+});
+
+r.post('/integrations/:code/test', requireRole('SystemAdmin'), async (req, res) => {
+  const cfg = await q1('SELECT * FROM integration_config WHERE code=$1', [req.params.code]);
+  if (!cfg) return res.status(404).json({ error: 'not_found' });
+  const started = Date.now();
+  let status = 'success'; let message = '';
+  try {
+    switch (cfg.code) {
+      case 'KHUR': {
+        const c = await q1('SELECT count(*)::int AS c FROM khur_registry');
+        message = `ХУР холболт OK — бүртгэлийн сан: ${c.c} байгууллага (демо орчинд дотоод registry ашиглаж байна)`;
+        break;
+      }
+      case 'ANTHROPIC': {
+        if (!process.env.ANTHROPIC_API_KEY && !cfg.api_key) { status = 'failure'; message = 'API key тохируулаагүй байна'; break; }
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'x-api-key': cfg.api_key || process.env.ANTHROPIC_API_KEY!, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+          body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5', max_tokens: 12, messages: [{ role: 'user', content: 'ping — reply "pong"' }] }),
+        });
+        if (resp.ok) { const d: any = await resp.json(); message = `Claude API OK — ${d.model}: "${d.content?.[0]?.text || 'pong'}"`; }
+        else { status = 'failure'; message = `Claude API алдаа: HTTP ${resp.status}`; }
+        break;
+      }
+      case 'SMTP': {
+        await q(`INSERT INTO email_outbox(to_email, subject, body) VALUES ($1,'OASIS SMTP test','Integration test message — ${new Date().toISOString()}')`,
+          [req.user!.email]);
+        message = 'Тест имэйл outbox-д илгээгдлээ (демо орчинд симуляци — Мэйл хайрцагнаас харна)';
+        break;
+      }
+      case 'SAP_PNOW': {
+        const prs = await q1(`SELECT count(DISTINCT pr_no)::int AS c FROM tender_item WHERE pr_no IS NOT NULL`);
+        message = `SAP/PNow интерфэйс OK — ${prs.c} PR reference системд бүртгэлтэй (демо орчинд mock)`;
+        break;
+      }
+      case 'MSSQL_SYNC': {
+        if (!cfg.enabled) { status = 'failure'; message = 'Интеграц идэвхгүй байна — эхлээд идэвхжүүлнэ үү'; }
+        else message = `Sync тохиргоо OK — ${JSON.stringify(cfg.extra_json?.tables || [])} хүснэгтүүд, ${cfg.sync_interval_min} мин тутам (демо орчинд mock)`;
+        break;
+      }
+      case 'DAN': case 'SMS': default: {
+        if (!cfg.endpoint) { status = 'failure'; message = 'Endpoint тохируулаагүй байна'; }
+        else message = `Тохиргоо хүчинтэй — ${cfg.endpoint} (демо орчинд бодит холболт хийгдэхгүй)`;
+      }
+    }
+  } catch (e: any) {
+    status = 'failure'; message = String(e.message || e);
+  }
+  const dur = Date.now() - started;
+  await q(`UPDATE integration_config SET last_test_at=now(), last_test_status=$1, last_test_message=$2 WHERE code=$3`,
+    [status, message, cfg.code]);
+  await q(`INSERT INTO integration_log(code, direction, action, status, detail, duration_ms) VALUES ($1,'out','connection_test',$2,$3,$4)`,
+    [cfg.code, status, message, dur]);
+  await audit(req, 'integration_tested', 'integration', cfg.code, { after: status });
+  res.json({ status, message, duration_ms: dur });
+});
+
+r.get('/integrations/logs', async (req, res) => {
+  const { code } = req.query as any;
+  const cond = code ? 'WHERE code=$1' : '';
+  const rows = await q(`SELECT * FROM integration_log ${cond} ORDER BY created_at DESC LIMIT 200`, code ? [code] : []);
+  res.json(rows);
+});
+
 // ---- ХУР registry mock admin ----
 r.get('/khur', async (_req, res) => {
   res.json(await q('SELECT * FROM khur_registry ORDER BY registry_no'));

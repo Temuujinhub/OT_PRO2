@@ -4,6 +4,7 @@ import { post, get } from '../../api';
 import { useLang } from '../../i18n';
 import { useAuth } from '../../App';
 import { useToast, Field } from '../../ui';
+import { AuthLogo, LangTop } from './Login';
 
 export default function Register() {
   const { t } = useLang();
@@ -79,7 +80,8 @@ export default function Register() {
         <div className="caption"><h2>OASIS v2</h2><p>Нийлүүлэгчээр бүртгүүлж Оюу Толгойн тендерт оролцоорой.</p></div>
       </div>
       <div className="auth-panel">
-        <div className="logo"><img src="/ot-logo.svg" alt="OT" /><div>Оюу Толгой</div></div>
+        <LangTop />
+        <AuthLogo />
         <h1>{t('register')}</h1>
         <div className="sub">{step}/3 — {step === 1 ? t('reg_step1') : step === 2 ? t('verify_code') : t('reg_step3')}</div>
 

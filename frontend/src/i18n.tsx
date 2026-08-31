@@ -30,6 +30,12 @@ const D: Dict = {
   nav_dd: ['DD / COI', 'DD / COI'], nav_reports: ['Тайлан', 'Reports'], nav_users: ['Хэрэглэгчид', 'Users'],
   nav_masterdata: ['Мастер дата', 'Master data'], nav_translations: ['Орчуулга', 'Translations'],
   nav_audit: ['Аудит лог', 'Audit log'], nav_support_admin: ['Дэмжлэг', 'Support'],
+  nav_integrations: ['Интеграц', 'Integrations'],
+  test_connection: ['Холболт шалгах', 'Test connection'], last_test: ['Сүүлийн шалгалт', 'Last test'],
+  enabled: ['Идэвхтэй', 'Enabled'], disabled_st: ['Идэвхгүй', 'Disabled'],
+  endpoint: ['Endpoint / хаяг', 'Endpoint'], api_key: ['API түлхүүр', 'API key'],
+  sync_interval: ['Sync давтамж (мин)', 'Sync interval (min)'],
+  integration_logs: ['Интеграцийн лог', 'Integration logs'],
   nav_notif_admin: ['Мэдэгдэл удирдлага', 'Notifications'],
 
   // auth
