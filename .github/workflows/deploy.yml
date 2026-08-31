@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: deploy
   cancel-in-progress: false
@@ -21,18 +24,18 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           printf '%s\n' "$SSH_KEY" > /tmp/key
           chmod 600 /tmp/key
-          ssh -i /tmp/key -o StrictHostKeyChecking=no -o ConnectTimeout=20 "$USER@$HOST" bash -s <<EOF
-          set -e
+          set +e
+          ssh -i /tmp/key -o StrictHostKeyChecking=no -o ConnectTimeout=20 -o BatchMode=yes "$USER@$HOST" bash -s > /tmp/out.txt 2>&1 <<EOF
+          set -ex
           export DEBIAN_FRONTEND=noninteractive
           if ! command -v docker >/dev/null; then
             curl -fsSL https://get.docker.com | sh
           fi
-          if ! docker compose version >/dev/null 2>&1; then
-            apt-get install -y docker-compose-plugin
-          fi
+          docker compose version >/dev/null 2>&1 || apt-get install -y docker-compose-plugin
           command -v git >/dev/null || apt-get install -y git
           mkdir -p /opt/oasis
           if [ ! -d /opt/oasis/repo/.git ]; then
@@ -41,17 +44,23 @@ jobs:
           cd /opt/oasis/repo
           git fetch origin main
           git reset --hard origin/main
-          cat > .env <<ENV
-          JWT_SECRET=$JWT_SECRET
-          ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
-          DB_PASSWORD=$DB_PASSWORD
-          ENV
+          printf 'JWT_SECRET=%s\nANTHROPIC_API_KEY=%s\nDB_PASSWORD=%s\n' "$JWT_SECRET" "$ANTHROPIC_API_KEY" "$DB_PASSWORD" > .env
           docker compose up -d --build
           docker image prune -f
           sleep 20
           curl -sf http://localhost/api/v1/health
           echo "DEPLOY OK"
           EOF
+          RC=$?
+          echo "== ssh exit: $RC ==" >> /tmp/out.txt
+          # report log back into the repo (runner->blob logs are unreachable from our side)
+          # redact secrets just in case
+          sed -i -e "s/$JWT_SECRET/***/g" -e "s/$DB_PASSWORD/***/g" -e "s/${ANTHROPIC_API_KEY:0:20}[^ ]*/***API_KEY***/g" /tmp/out.txt || true
+          tail -c 40000 /tmp/out.txt > /tmp/out2.txt
+          B64=$(base64 -w0 /tmp/out2.txt)
+          SHA=$(curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/${{ github.repository }}/contents/deploy-log.txt | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('sha',''))" || true)
+          curl -s -X PUT -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/${{ github.repository }}/contents/deploy-log.txt -d "{\"message\":\"deploy log [skip ci]\",\"content\":\"$B64\"$( [ -n "$SHA" ] && echo ",\"sha\":\"$SHA\"" )}" -o /dev/null
+          exit $RC
 
       - name: Smoke test from runner
         run: |
