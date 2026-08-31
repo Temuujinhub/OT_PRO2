@@ -502,7 +502,14 @@ export async function seed() {
       [uid[email]]);
   }
 
-  // ---------- integration configs (spec section 12) ----------
+  await seedIntegrations();
+
+  await q(`INSERT INTO audit_event(actor_name, action, entity_type, entity_id, after_summary)
+           VALUES ('system','seed_completed','system','0','Demo data seeded')`);
+}
+
+// ---------- integration configs (spec section 12) — idempotent, also run on upgraded DBs ----------
+export async function seedIntegrations() {
   await q(`INSERT INTO integration_config(code, name_mn, name_en, category, enabled, endpoint, username, sync_interval_min, extra_json) VALUES
     ('KHUR','ХУР систем (байгууллага)','KHUR state registry','government', true,'https://xyp.gov.mn/api/company','oasis_service', null,'{"consent_required":true,"fields":["registry_no","name","legal_form","director"]}'),
     ('DAN','ДАН нэвтрэлт','DAN authentication','government', false,'https://sso.gov.mn/oauth','', null,'{"scopes":["citizen_basic"]}'),
@@ -519,7 +526,4 @@ export async function seed() {
     ('SMTP','out','send_email','success','tender invitation batch: 5 имэйл', 890),
     ('SAP_PNOW','out','award_summary','success','RFQ-2026-00004 award → SAP', 640),
     ('KHUR','out','company_lookup','failure','registry 9999999: ХУР-д олдсонгүй', 305)`);
-
-  await q(`INSERT INTO audit_event(actor_name, action, entity_type, entity_id, after_summary)
-           VALUES ('system','seed_completed','system','0','Demo data seeded')`);
 }

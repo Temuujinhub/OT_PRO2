@@ -2,7 +2,7 @@ import express from 'express';
 import 'express-async-errors'; // async route errors reach the error handler instead of crashing
 import cors from 'cors';
 import { initSchema, q, q1, pool } from './db';
-import { seed } from './seed';
+import { seed, seedIntegrations } from './seed';
 
 import authRoutes from './routes/auth';
 import supplierRoutes from './routes/suppliers';
@@ -103,6 +103,10 @@ async function start() {
     console.log('Empty database — seeding demo data...');
     await seed();
     console.log('Seed complete.');
+  } else {
+    // upgraded database: fill newly added reference tables
+    const ic = await q1('SELECT count(*)::int AS c FROM integration_config');
+    if (ic.c === 0) { await seedIntegrations(); console.log('Integration configs seeded (upgrade).'); }
   }
   setInterval(closeExpiredTenders, 30000);
   app.listen(PORT, () => console.log(`OASIS v2 API listening on :${PORT}`));
