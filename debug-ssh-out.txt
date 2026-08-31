@@ -1,0 +1,29 @@
+== ping/port check ==
+port 22 OPEN
+== ssh attempt ==
+debug1: Server host key: ssh-ed25519 SHA256:8OTBTtzT7DUP3f9YsGHTxeNBJC4gmFGGfWHEJmSO0BQ
+debug1: load_hostkeys: fopen /home/runner/.ssh/known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /home/runner/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: SELinux support disabled
+Warning: Permanently added '168.144.41.111' (ED25519) to the list of known hosts.
+debug1: check_host_key: hostkey not known or explicitly trusted: disabling UpdateHostkeys
+debug1: ssh_packet_send2_wrapped: resetting send seqnr 3
+debug1: rekey out after 134217728 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: Sending SSH2_MSG_EXT_INFO
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: ssh_packet_read_poll2: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug1: rekey in after 134217728 blocks
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_ext_info_client_parse: server-sig-algs=<ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256>
+debug1: kex_ext_info_check_ver: publickey-hostbound@openssh.com=<0>
+debug1: kex_ext_info_check_ver: ping@openssh.com=<0>
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_ext_info_client_parse: server-sig-algs=<ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256>
+debug1: Authentications that can continue: publickey
+debug1: No more authentication methods to try.
+root@168.144.41.111: Permission denied (publickey).
+== exit: 0 ==
