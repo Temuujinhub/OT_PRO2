@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://mail.google.com/mail/_/bscframe -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+.SignerDigitalExtPopupModal {
+	font-family: Calibri, sans-serif;
+	display: none;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	display: flex;
+	left: 0;
+	top: 0;
+	position: fixed;
+	z-index: 9999;
+}
+
+.SignerDigitalExtClose {
+    position: absolute;
+    top: 30px;
+    right: 525px;
+    background: none;
+    border: none;
+    color: black;
+    font-size: 25px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+.SignerDigitalExtLicSitesClose {
+	background: none;
+	border: none;
+	color: black;
+	font-size: 25px;
+	cursor: pointer;
+	line-height:1;
+	transition: color 0.3s ease-in-out;
+}
+
+.SignerDigitalExtSelCertContainer {
+    font-family: Calibri, sans-serif;
+    background-color: #e6faf6;
+    top: 50px;
+	position: relative;
+	padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    width: 420px;
+    height: 420px;
+}
+
+.SignerDigitalExtSCPinContainer {
+    font-family: Calibri, sans-serif;
+    background-color: #e6faf6;
+    top: 50px;
+	position: relative;
+	padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    width: 360px;
+    height: 180px;
+}
+
+#SDCertListContainer {
+    margin-top: 10px;
+    max-height: 300px;
+    background-color: white;
+    overflow-y: auto;
+    padding: 0px;
+    border-radius: 5px;
+}
+
+
+.SignerDigitalExtImg {
+    text-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+}
+
+.SignerDigitalExtSpan {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+}
+
+.SignerDigitalExtCertItem {
+    padding: 5px;
+    border-bottom: 1px solid;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.SignerDigitalExtCertItem:hover {
+	background-color: #ccc;
+}
+
+.SignerDigitalExtCertItem.selected {
+	background-color: #ccc;
+	border-color: #007bff;
+}
+
+.expired {
+    color: red;
+    font-weight: bold;
+}
+
+.SignerDigitalExtButton {
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+.SignerDigitalExtLicSitesImg {
+	padding-top: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+.SignerDigitalExtLicSitesSpan {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.SignerDigitalExtLicSitesContainer {
+	font-family: Calibri, sans-serif;
+	background-color: #e6faf6;
+	border: 1px solid black;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin: 30px auto;
+	width: 550px;
+	height: 500px;
+}
+
+.SignerDigitalExtLicSitesHeader {
+	font-size: 16px;
+	display: flex;
+	justify-content: space-between;
+	background-color: white;
+	padding: 5px;
+	border-bottom: 1px solid #ddd;
+}
+
+.SignerDigitalExtLicSitesParagraph {
+	padding-left: 15px;
+	padding-top: 20px;
+	font-size: 14px;
+}
+
+.SignerDigitalExtLicSitesDiv {
+	display: flex;
+	justify-content:center;
+	padding: 10px;
+}
+
+.SignerDigitalExtLicSitesBtn {
+	width: 100px;
+	padding: 3px;
+	font-weight: 600;
+	font-size: 12px;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+ .SignerDigitalExtLicSitesTable {
+     width: 100%;
+     background-color: white;
+     border-collapse: collapse;
+ }
+
+	
+ .SignerDigitalExtLicSitesTd {
+	 padding: 5px !important;
+     width: 140px;
+     border: 1px solid #ddd;
+     text-align: left;
+	 vertical-align:middle;
+ }
+ .SignerDigitalExtLicSitesTdd {
+     border: 1px solid #ddd;
+     text-align: center;
+ }
+
+ .SignerDigitalExtLicSitesTh {
+     border: 1px solid #ddd;
+     background-color: #f4f4f4;
+	 line-height:1;
+     width: 100px;
+     text-align: left;
+	 margin-top:5px;
+     padding: 5px;
+ }
+.SignerDigitalExtLicSitesScroll {
+     max-height: 200px;
+     overflow-y: auto;
+ }
+ .SignerDigitalExtLicSitesDltbtn {
+     color: white;
+     background-color: #e42424;
+     border: 1px solid black;
+     cursor: pointer;
+     border-radius: 4px;
+ }
+ .SignerDigitalExtLicSitesDltbtn:hover {
+         background-color: darkred;
+ }
+</style>
+</head><body></body><div id="SelCertPopupModal" class="SignerDigitalExtPopupModal" style="display:none;">
+    <div class="SignerDigitalExtSelCertContainer">
+        <button id="SelCertCloseBtn" class="SignerDigitalExtClose">x</button>
+		<div class="SignerDigitalExtImg">
+			<img id="SDIconSelCert" alt="Globe icon" height="32" width="32" src="chrome-extension://glghokcicpikglmflbbelbgeafpijkkf/icon32.png">&nbsp;&nbsp;&nbsp;
+			<span class="SignerDigitalExtSpan" style="text-align:center;">Select Certificate</span>
+		</div>		
+		<div style="height: 310px; width: 100%; border-bottom: 1px solid black;background-color:white;">
+			<div style="max-height: 310px; overflow-y: auto;">
+				<div id="SDCertListContainer"></div>
+			</div>
+		</div>
+		<div class="SignerDigitalExtButton">
+			<button id="SelCertOkBtn" style="width: 80px">OK</button>
+			<button id="SelCertCancelBtn" style="margin-left:15px; width: 80px;">Cancel</button>
+		</div>
+	</div>
+</div>
+<div id="SdExtSCPinPopupModal" class="SignerDigitalExtPopupModal" style="display:none;">
+    <div class="SignerDigitalExtSCPinContainer">
+		<form>
+			<div class="SignerDigitalExtImg" style="border-bottom: 1px solid black;">
+				<img id="SDIconSCPin" alt="Globe icon" height="32" width="32" src="chrome-extension://glghokcicpikglmflbbelbgeafpijkkf/icon32.png">&nbsp;&nbsp;&nbsp;
+				<span class="SignerDigitalExtSpan" style="text-align:center;">Smartcard / Token User Pin</span>
+			</div>
+			<div style="text-align:center; padding-top:25px; padding-bottom:25px; font-size:14px;">User PIN:&nbsp;&nbsp;&nbsp;<input id="SdExtUserPin" type="password">
+			</div>
+			<div class="SignerDigitalExtButton" style="border-top: 1px solid black;">
+				<button id="SdScPinOkBtn" type="button" style="width: 80px">OK</button>
+				<button id="SdSCPinCancelBtn" type="button" style="margin-left:15px; width: 80px;">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div id="LicSitesPopupModal" class="SignerDigitalExtPopupModal" style="display:none;">
+	<div class="SignerDigitalExtLicSitesContainer">
+		<div class="SignerDigitalExtLicSitesHeader">
+			<span style="margin:10px;">Signer.Digital</span>
+			<button id="LicSitesCloseBtn" class="SignerDigitalExtLicSitesClose">x</button>
+		</div>
+		<div class="SignerDigitalExtLicSitesImg">
+			<img id="SDIconLicSite" alt="Globe icon" height="32" width="32" src="chrome-extension://glghokcicpikglmflbbelbgeafpijkkf/icon32.png">&nbsp;&nbsp;
+			<span class="SignerDigitalExtLicSitesSpan">Signer.Digital - Confirm Key Listing / Usage</span>
+		</div>
+		<div style="display:none;"><img id="trash_icon_src" src="chrome-extension://glghokcicpikglmflbbelbgeafpijkkf/icon_trash.svg"></div>
+		<div class="SignerDigitalExtLicSitesParagraph">
+			<span id="currentDomainLink" style="font-size:18px;font-weight:600;">Current Domain</span><br>
+			is trying to detect smartcards connected, or read certificate or use key for signing/encryption. Please
+			select your option.
+		</div>
+		<div class="SignerDigitalExtLicSitesDiv">
+			<button id="denyBtn" class="SignerDigitalExtLicSitesBtn">Deny</button>
+			<button id="alwaysallowBtn" class="SignerDigitalExtLicSitesBtn" style="margin-left:30px;" title="Allow access to Check Vendor License for Site.">Always Allow</button>
+		</div>
+		<div style="padding: 10px; text-align: center; ">
+			<strong style="font-size:18px;">Licensed Sites</strong><br><br>
+			<div style="height: 200px; width: 100%; border: 1px solid black;">
+				<div class="SignerDigitalExtLicSitesScroll">
+					<table class="SignerDigitalExtLicSitesTable">
+						<thead>
+							<tr>
+								<th class="SignerDigitalExtLicSitesTh">Website</th>
+								<th class="SignerDigitalExtLicSitesTh">License Status</th>
+								<th class="SignerDigitalExtLicSitesTh">Features</th>
+								<th class="SignerDigitalExtLicSitesTh" style="width:50px;">Action</th>
+							</tr>
+						</thead>
+						<tbody id="licenseSitesTableBody">
+							<!-- Table rows will be dynamically added here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<span id="SDLicSitesErrMsg" style="color:red"></span>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+</html>
