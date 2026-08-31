@@ -48,7 +48,7 @@ jobs:
           docker compose up -d --build
           docker image prune -f
           sleep 20
-          curl -sf http://localhost/api/v1/health
+          curl -sf http://localhost:8080/api/v1/health
           echo "DEPLOY OK"
           EOF
           RC=$?
@@ -65,5 +65,5 @@ jobs:
       - name: Smoke test from runner
         run: |
           sleep 5
-          curl -sf "http://${{ secrets.DROPLET_HOST }}/api/v1/health"
+          curl -sf "http://${{ secrets.DROPLET_HOST }}:8080/api/v1/health"
           echo "SMOKE OK"
