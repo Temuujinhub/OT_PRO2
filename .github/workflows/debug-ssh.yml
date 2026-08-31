@@ -1,0 +1,28 @@
+name: Debug SSH
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Try SSH and report
+        env:
+          HOST: ${{ secrets.DROPLET_HOST }}
+          USER: ${{ secrets.DROPLET_USER }}
+          PASS: ${{ secrets.DROPLET_PASSWORD }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          set +e
+          {
+            echo "== ping/port check =="
+            timeout 10 bash -c "cat </dev/null >/dev/tcp/$HOST/22" && echo "port 22 OPEN" || echo "port 22 CLOSED/FILTERED"
+            echo "== ssh attempt =="
+            sshpass -p "$PASS" ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=15 -o PreferredAuthentications=password -o PubkeyAuthentication=no "$USER@$HOST" 'echo SSH_OK; uname -a; free -m | head -2; df -h / | tail -1' 2>&1 | tail -25
+            echo "== exit: $? =="
+          } > /tmp/out.txt 2>&1
+          B64=$(base64 -w0 /tmp/out.txt)
+          SHA=$(curl -s -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/${{ github.repository }}/contents/debug-ssh-out.txt | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('sha',''))" || true)
+          curl -s -X PUT -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/${{ github.repository }}/contents/debug-ssh-out.txt -d "{\"message\":\"debug ssh output\",\"content\":\"$B64\"$( [ -n "$SHA" ] && echo ",\"sha\":\"$SHA\"" )}" -o /dev/null
+          echo done
