@@ -13,19 +13,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install sshpass
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
-
       - name: Deploy over SSH
         env:
           HOST: ${{ secrets.DROPLET_HOST }}
           USER: ${{ secrets.DROPLET_USER }}
-          PASS: ${{ secrets.DROPLET_PASSWORD }}
+          SSH_KEY: ${{ secrets.DROPLET_SSH_KEY }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=20 "$USER@$HOST" bash -s <<EOF
+          printf '%s\n' "$SSH_KEY" > /tmp/key
+          chmod 600 /tmp/key
+          ssh -i /tmp/key -o StrictHostKeyChecking=no -o ConnectTimeout=20 "$USER@$HOST" bash -s <<EOF
           set -e
           export DEBIAN_FRONTEND=noninteractive
           if ! command -v docker >/dev/null; then
@@ -34,6 +33,7 @@ jobs:
           if ! docker compose version >/dev/null 2>&1; then
             apt-get install -y docker-compose-plugin
           fi
+          command -v git >/dev/null || apt-get install -y git
           mkdir -p /opt/oasis
           if [ ! -d /opt/oasis/repo/.git ]; then
             git clone https://github.com/${{ github.repository }}.git /opt/oasis/repo
@@ -48,7 +48,7 @@ jobs:
           ENV
           docker compose up -d --build
           docker image prune -f
-          sleep 15
+          sleep 20
           curl -sf http://localhost/api/v1/health
           echo "DEPLOY OK"
           EOF
