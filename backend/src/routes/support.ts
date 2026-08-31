@@ -62,6 +62,39 @@ r.post('/assistant', async (req, res) => {
   res.json(answer);
 });
 
+// ---- Downloadable guides (legacy supplier manuals — repo /OASIS folder) ----
+import fs from 'fs';
+import path from 'path';
+const GUIDES_DIR = process.env.GUIDES_DIR || path.join(process.cwd(), '..', 'OASIS');
+const GUIDES: { file: string; label_mn: string; label_en: string; category: string }[] = [
+  { file: 'MNManual-SupplierLog-in.pdf', label_mn: 'Нэвтрэх, бүртгүүлэх заавар (МН)', label_en: 'Supplier log-in & registration manual (MN)', category: 'registration' },
+  { file: 'Manual-Suppliergeneralinfo.pdf', label_mn: 'Ерөнхий мэдээлэл бөглөх заавар', label_en: 'General information manual', category: 'registration' },
+  { file: 'Manual-SupplierPre-Qualification.pdf', label_mn: 'Урьдчилсан үнэлгээ бөглөх заавар', label_en: 'Pre-Qualification manual', category: 'qualification' },
+  { file: 'Manual-SupplierTendermenu.pdf', label_mn: 'Тендер цэсний заавар', label_en: 'Tender menu manual', category: 'tender' },
+  { file: 'Manual-SupplierEOI.pdf', label_mn: 'EOI-д оролцох заавар', label_en: 'EOI participation manual', category: 'tender' },
+  { file: 'Manual-SupplierRFQ.pdf', label_mn: 'RFQ үнийн санал илгээх заавар', label_en: 'RFQ bid submission manual', category: 'tender' },
+];
+
+r.get('/guides', async (_req, res) => {
+  const out = GUIDES.map(g => {
+    const p = path.join(GUIDES_DIR, g.file);
+    const exists = fs.existsSync(p);
+    return { ...g, available: exists, size_bytes: exists ? fs.statSync(p).size : 0 };
+  }).filter(g => g.available);
+  res.json(out);
+});
+
+r.get('/guides/:file/download', async (req, res) => {
+  const g = GUIDES.find(x => x.file === req.params.file); // allowlist — no path traversal
+  if (!g) return res.status(404).json({ error: 'not_found' });
+  const p = path.join(GUIDES_DIR, g.file);
+  if (!fs.existsSync(p)) return res.status(410).json({ error: 'file_missing' });
+  await audit(req, 'guide_downloaded', 'support', g.file);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(g.file)}`);
+  fs.createReadStream(p).pipe(res);
+});
+
 // ---- Tickets ----
 r.get('/tickets', async (req, res) => {
   if (req.user!.userType === 'supplier') {

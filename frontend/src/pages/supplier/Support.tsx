@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { get, post, fmtDate } from '../../api';
+import { get, post, download, fmtDate } from '../../api';
 import { useLang, useL } from '../../i18n';
 import { Card, Tabs, Field, Spinner, StatusChip, useToast, Empty, Modal } from '../../ui';
 
@@ -20,6 +20,9 @@ export default function Support() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [tModal, setTModal] = useState(false);
   const [tf, setTf] = useState<any>({ severity: 3 });
+
+  const [guides, setGuides] = useState<any[]>([]);
+  useEffect(() => { get('/support/guides').then(setGuides).catch(() => {}); }, []);
 
   const loadArticles = () => {
     const p = new URLSearchParams();
@@ -49,6 +52,23 @@ export default function Support() {
 
       {tab === 'hub' && (
         <>
+          {guides.length > 0 && (
+            <Card title={`📥 ${lang === 'mn' ? 'Гарын авлага татах (PDF)' : 'Download manuals (PDF)'}`}>
+              <div className="grid g2">
+                {guides.map(g => (
+                  <div key={g.file} className="row between" style={{ border: '1px solid var(--line)', borderRadius: 10, padding: '10px 14px' }}>
+                    <div>
+                      <div className="bold">📄 {lang === 'mn' ? g.label_mn : g.label_en}</div>
+                      <div className="mut">{g.file} · {Math.round(g.size_bytes / 1024)} KB · <span className="chip gray">{g.category}</span></div>
+                    </div>
+                    <button className="btn sec sm" onClick={() => download(`/support/guides/${encodeURIComponent(g.file)}/download`, g.file)}>
+                      ⬇ {t('download')}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
           <div className="row mb16">
             <button className={`btn sm ${cat === '' ? '' : 'sec'}`} onClick={() => setCat('')}>{t('all')}</button>
             {CATS.map(c => <button key={c} className={`btn sm ${cat === c ? '' : 'sec'}`} onClick={() => setCat(c)}>{c}</button>)}
