@@ -10,13 +10,13 @@ Warning: Permanently added '168.144.41.111' (ED25519) to the list of known hosts
 + git fetch origin main
 From https://github.com/Temuujinhub/OT_PRO2
  * branch            main       -> FETCH_HEAD
-   684fe32..a1b112d  main       -> origin/main
+   a1b112d..7c41b34  main       -> origin/main
 + git reset --hard origin/main
-HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matched), SECT categories visible in admin (supplier list column+filter, detail chips)
+HEAD is now at 7c41b34 Merge ui/design-system-v2.4 — professional design system + real Figma brand assets
 + printf 'JWT_SECRET=%s\nANTHROPIC_API_KEY=%s\nDB_PASSWORD=%s\n' *** ***API_KEY*** ***
 + docker compose up -d --build
- Image repo-api Building 
  Image repo-web Building 
+ Image repo-api Building 
 #1 [internal] load local bake definitions
 #1 reading from stdin 875B done
 #1 DONE 0.0s
@@ -35,8 +35,8 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 #5 [web internal] load metadata for docker.io/library/nginx:1.27-alpine
 #5 DONE 1.3s
 
-#4 [api internal] load metadata for docker.io/library/node:22-alpine
-#4 DONE 1.4s
+#4 [web internal] load metadata for docker.io/library/node:22-alpine
+#4 DONE 1.3s
 
 #6 [web internal] load .dockerignore
 #6 transferring context: 2B done
@@ -46,21 +46,21 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 #7 transferring context: 2B done
 #7 DONE 0.0s
 
-#8 [web internal] load build context
-#8 transferring context: 36.93kB 0.0s done
+#8 [api internal] load build context
 #8 DONE 0.0s
 
-#9 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
-#9 resolve docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 0.0s done
+#9 [web internal] load build context
+#9 transferring context: 350.57kB 0.0s done
 #9 DONE 0.0s
 
 #10 [web stage-1 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
 #10 resolve docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 0.0s done
 #10 DONE 0.0s
 
-#11 [api internal] load build context
-#11 transferring context: 20.44kB done
-#11 DONE 0.0s
+#11 [api build 1/6] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#11 resolve docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#11 resolve docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 0.0s done
+#11 DONE 0.1s
 
 #12 [web build 3/6] COPY package*.json ./
 #12 CACHED
@@ -68,39 +68,46 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 #13 [web build 4/6] RUN npm ci --no-audit --no-fund
 #13 CACHED
 
-#14 [api build 4/7] RUN npm ci --no-audit --no-fund
+#8 [api internal] load build context
+#8 transferring context: 42.66kB done
+#8 DONE 0.0s
+
+#14 [api build 3/7] COPY package*.json ./
 #14 CACHED
 
 #15 [api build 2/6] WORKDIR /app
 #15 CACHED
 
-#16 [api build 3/7] COPY package*.json ./
+#16 [api build 4/7] RUN npm ci --no-audit --no-fund
 #16 CACHED
 
 #17 [api build 5/7] COPY tsconfig.json ./
 #17 CACHED
 
-#18 [api build 6/7] COPY src ./src
+#18 [web build 5/6] COPY . .
 #18 DONE 0.1s
 
-#19 [web build 5/6] COPY . .
+#19 [api build 6/7] COPY src ./src
 #19 DONE 0.1s
 
-#20 [web build 6/6] RUN npx vite build
-#20 1.491 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
-#20 1.566 vite v5.4.21 building for production...
-#20 1.662 transforming...
-#20 6.504 ✓ 71 modules transformed.
-#20 7.280 rendering chunks...
-#20 7.317 computing gzip size...
-#20 7.351 dist/index.html                   0.76 kB │ gzip:   0.43 kB
-#20 7.352 dist/assets/index-Bk7l7uWH.css   13.57 kB │ gzip:   3.85 kB
-#20 7.353 dist/assets/index-Wr3Dc3G6.js   379.69 kB │ gzip: 110.24 kB
-#20 7.354 ✓ built in 5.75s
-#20 DONE 7.5s
+#20 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
+#20 ...
 
-#21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
-#21 ...
+#21 [web build 6/6] RUN npx vite build
+#21 1.470 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+#21 1.530 vite v5.4.21 building for production...
+#21 1.653 transforming...
+#21 6.413 ✓ 72 modules transformed.
+#21 7.123 rendering chunks...
+#21 7.137 computing gzip size...
+#21 7.164 dist/index.html                   1.00 kB │ gzip:   0.50 kB
+#21 7.164 dist/assets/index-CYZgczHB.css   39.38 kB │ gzip:   8.54 kB
+#21 7.164 dist/assets/index-n3TphJZn.js   397.28 kB │ gzip: 116.05 kB
+#21 7.165 ✓ built in 5.57s
+#21 DONE 7.3s
+
+#20 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
+#20 ...
 
 #10 [web stage-1 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
 #10 CACHED
@@ -112,24 +119,26 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 #23 DONE 0.0s
 
 #24 [web] exporting to image
-#24 exporting layers 0.1s done
-#24 exporting manifest sha256:864988bb05488bfbae96da6359dab9e7f9b4af00490205b56d1aa67e8a039d00 0.0s done
-#24 exporting config sha256:af4989048c34d9337cba2c586e9824ac91b791fd26df747281a46779c0baad31 0.0s done
-#24 exporting attestation manifest sha256:19cc2581385f520155252fcd3df8fd12bb68e9dfbf96d5e6413270143864882b 0.0s done
-#24 exporting manifest list sha256:56e6a203de818d0c285bdfabc7dbe4b36dd8eae3b492702f7ec71a54be98428a
-#24 exporting manifest list sha256:56e6a203de818d0c285bdfabc7dbe4b36dd8eae3b492702f7ec71a54be98428a 0.0s done
+#24 exporting layers
+#24 exporting layers 0.2s done
+#24 exporting manifest sha256:6f4306ce58af16aafe1deada61fa48b5749546bd7223a5873384c8a77e3fbe9c
+#24 exporting manifest sha256:6f4306ce58af16aafe1deada61fa48b5749546bd7223a5873384c8a77e3fbe9c 0.0s done
+#24 exporting config sha256:3e36ba5965acd8917da650fcd43284a6a33f2da4b18b1e3ea5b4b2f0574f47b9 0.0s done
+#24 exporting attestation manifest sha256:19b4d22ca73173edd214e209ba29c38419d678a919e1619b52f057e31f63b217 0.0s done
+#24 exporting manifest list sha256:8cec7f21237645767635838700e9f07221e39705cb1056fc5b2d834a9b1f7fdf 0.0s done
 #24 naming to docker.io/library/repo-web:latest done
+#24 unpacking to docker.io/library/repo-web:latest
 #24 unpacking to docker.io/library/repo-web:latest 0.1s done
 #24 DONE 0.4s
 
-#21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
-#21 ...
+#20 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
+#20 ...
 
 #25 [web] resolving provenance for metadata file
 #25 DONE 0.0s
 
-#21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
-#21 DONE 10.6s
+#20 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
+#20 DONE 10.3s
 
 #26 [api stage-1 4/6] RUN npm ci --omit=dev --no-audit --no-fund
 #26 CACHED
@@ -142,13 +151,14 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 
 #29 [api] exporting to image
 #29 exporting layers 0.1s done
-#29 exporting manifest sha256:c042f70d066032ed29851ab48d0d37b106fd7c8f72a1a1643217777b6ca09e65 0.0s done
-#29 exporting config sha256:acc46fd963b6192dc6a628b2747b56d0dfc7a260237dc0ebec34f96029fc0b06 done
-#29 exporting attestation manifest sha256:1ec98d01f7d1490ff753c21319fb37473a097728501a37fe7fd40d0f9de702b7 0.0s done
-#29 exporting manifest list sha256:06dd4e40ba15d73c0dfab39401e7ef1d2e252e349f79fa7fb064a2db4c1959b2 done
+#29 exporting manifest sha256:50caf456d112fc6c37c38911de7e0fd75aea1f096345fd67f230ea45570f775e 0.0s done
+#29 exporting config sha256:6e8202ce5459c0faa35c51ed037d610b51f425cb12772beaa4eb66fcf6b52b5e
+#29 exporting config sha256:6e8202ce5459c0faa35c51ed037d610b51f425cb12772beaa4eb66fcf6b52b5e 0.0s done
+#29 exporting attestation manifest sha256:a47559726d7d2dfa5e7d4a2954d81056aaa8593d82b639045d4bbeeee420c18d 0.0s done
+#29 exporting manifest list sha256:fdb58bebff36182d953df4408eced864fc1bb88afdc7e0dc179b742c0a1f990b 0.0s done
 #29 naming to docker.io/library/repo-api:latest done
-#29 unpacking to docker.io/library/repo-api:latest 0.0s done
-#29 DONE 0.2s
+#29 unpacking to docker.io/library/repo-api:latest 0.1s done
+#29 DONE 0.3s
 
 #30 [api] resolving provenance for metadata file
 #30 DONE 0.0s
@@ -169,6 +179,6 @@ HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matche
 Total reclaimed space: 0B
 + sleep 20
 + curl -sf http://localhost:8080/api/v1/health
-{"status":"ok","version":"2.0.0","db":"up","time":"2026-09-01T02:31:07.243Z"}DEPLOY OK
+{"status":"ok","version":"2.0.0","db":"up","time":"2026-09-01T13:03:53.110Z"}DEPLOY OK
 + echo 'DEPLOY OK'
 == ssh exit: 0 ==
