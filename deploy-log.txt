@@ -10,13 +10,13 @@ Warning: Permanently added '168.144.41.111' (ED25519) to the list of known hosts
 + git fetch origin main
 From https://github.com/Temuujinhub/OT_PRO2
  * branch            main       -> FETCH_HEAD
-   034733b..684fe32  main       -> origin/main
+   684fe32..a1b112d  main       -> origin/main
 + git reset --hard origin/main
-HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub (repo /OASIS PDFs, allowlisted, audited)
+HEAD is now at a1b112d v2.3: frosted glass auth panel (photo blend, Figma-matched), SECT categories visible in admin (supplier list column+filter, detail chips)
 + printf 'JWT_SECRET=%s\nANTHROPIC_API_KEY=%s\nDB_PASSWORD=%s\n' *** ***API_KEY*** ***
 + docker compose up -d --build
- Image repo-web Building 
  Image repo-api Building 
+ Image repo-web Building 
 #1 [internal] load local bake definitions
 #1 reading from stdin 875B done
 #1 DONE 0.0s
@@ -35,22 +35,22 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 #5 [web internal] load metadata for docker.io/library/nginx:1.27-alpine
 #5 DONE 1.3s
 
-#4 [web internal] load metadata for docker.io/library/node:22-alpine
+#4 [api internal] load metadata for docker.io/library/node:22-alpine
 #4 DONE 1.4s
 
-#6 [api internal] load .dockerignore
+#6 [web internal] load .dockerignore
 #6 transferring context: 2B done
 #6 DONE 0.0s
 
-#7 [web internal] load .dockerignore
+#7 [api internal] load .dockerignore
 #7 transferring context: 2B done
 #7 DONE 0.0s
 
 #8 [web internal] load build context
-#8 transferring context: 11.12kB done
+#8 transferring context: 36.93kB 0.0s done
 #8 DONE 0.0s
 
-#9 [api build 1/7] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#9 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
 #9 resolve docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 0.0s done
 #9 DONE 0.0s
 
@@ -59,7 +59,7 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 #10 DONE 0.0s
 
 #11 [api internal] load build context
-#11 transferring context: 14.62kB done
+#11 transferring context: 20.44kB done
 #11 DONE 0.0s
 
 #12 [web build 3/6] COPY package*.json ./
@@ -68,36 +68,36 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 #13 [web build 4/6] RUN npm ci --no-audit --no-fund
 #13 CACHED
 
-#14 [api build 3/7] COPY package*.json ./
+#14 [api build 4/7] RUN npm ci --no-audit --no-fund
 #14 CACHED
 
-#15 [api build 4/7] RUN npm ci --no-audit --no-fund
+#15 [api build 2/6] WORKDIR /app
 #15 CACHED
 
-#16 [api build 2/7] WORKDIR /app
+#16 [api build 3/7] COPY package*.json ./
 #16 CACHED
 
 #17 [api build 5/7] COPY tsconfig.json ./
 #17 CACHED
 
 #18 [api build 6/7] COPY src ./src
-#18 DONE 0.0s
+#18 DONE 0.1s
 
 #19 [web build 5/6] COPY . .
 #19 DONE 0.1s
 
 #20 [web build 6/6] RUN npx vite build
-#20 1.355 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
-#20 1.409 vite v5.4.21 building for production...
-#20 1.491 transforming...
-#20 5.202 ✓ 71 modules transformed.
-#20 5.834 rendering chunks...
-#20 5.854 computing gzip size...
-#20 5.891 dist/index.html                   0.76 kB │ gzip:   0.43 kB
-#20 5.892 dist/assets/index-Bt2OA6XK.css   13.25 kB │ gzip:   3.74 kB
-#20 5.893 dist/assets/index-BFxuLziL.js   378.83 kB │ gzip: 110.14 kB
-#20 5.895 ✓ built in 4.45s
-#20 DONE 6.0s
+#20 1.491 [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+#20 1.566 vite v5.4.21 building for production...
+#20 1.662 transforming...
+#20 6.504 ✓ 71 modules transformed.
+#20 7.280 rendering chunks...
+#20 7.317 computing gzip size...
+#20 7.351 dist/index.html                   0.76 kB │ gzip:   0.43 kB
+#20 7.352 dist/assets/index-Bk7l7uWH.css   13.57 kB │ gzip:   3.85 kB
+#20 7.353 dist/assets/index-Wr3Dc3G6.js   379.69 kB │ gzip: 110.24 kB
+#20 7.354 ✓ built in 5.75s
+#20 DONE 7.5s
 
 #21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
 #21 ...
@@ -113,19 +113,23 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 
 #24 [web] exporting to image
 #24 exporting layers 0.1s done
-#24 exporting manifest sha256:0ec162342d03f5afd9a843f53ac8604d8195b840ea8c1b698ea0f652c0aaaca0 0.0s done
-#24 exporting config sha256:e368520979b3ed0682cad88519bebb2991644da74bd6a185e007ebbca52a3e76 done
-#24 exporting attestation manifest sha256:0afb363d5489414477c4546d90fd323eafe25830ed97bcd886316a47a5dc705c 0.0s done
-#24 exporting manifest list sha256:c6149393f0448f6f8d3b2314ccba19b01cd91a8796a2962cc365869483b6b49a 0.0s done
+#24 exporting manifest sha256:864988bb05488bfbae96da6359dab9e7f9b4af00490205b56d1aa67e8a039d00 0.0s done
+#24 exporting config sha256:af4989048c34d9337cba2c586e9824ac91b791fd26df747281a46779c0baad31 0.0s done
+#24 exporting attestation manifest sha256:19cc2581385f520155252fcd3df8fd12bb68e9dfbf96d5e6413270143864882b 0.0s done
+#24 exporting manifest list sha256:56e6a203de818d0c285bdfabc7dbe4b36dd8eae3b492702f7ec71a54be98428a
+#24 exporting manifest list sha256:56e6a203de818d0c285bdfabc7dbe4b36dd8eae3b492702f7ec71a54be98428a 0.0s done
 #24 naming to docker.io/library/repo-web:latest done
-#24 unpacking to docker.io/library/repo-web:latest 0.0s done
-#24 DONE 0.3s
+#24 unpacking to docker.io/library/repo-web:latest 0.1s done
+#24 DONE 0.4s
+
+#21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
+#21 ...
 
 #25 [web] resolving provenance for metadata file
 #25 DONE 0.0s
 
 #21 [api build 7/7] RUN npx tsc -p . && cp src/schema.sql dist/schema.sql
-#21 DONE 8.1s
+#21 DONE 10.6s
 
 #26 [api stage-1 4/6] RUN npm ci --omit=dev --no-audit --no-fund
 #26 CACHED
@@ -138,10 +142,10 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 
 #29 [api] exporting to image
 #29 exporting layers 0.1s done
-#29 exporting manifest sha256:316dee820b356d8b0f418ab52b3ef327f8155032c18bfdbe44ab3a5dd0792247 0.0s done
-#29 exporting config sha256:33cc39ead4a546072e4a032800dde3be89fd87ace8d7678046374b49d9c56b8d done
-#29 exporting attestation manifest sha256:5b2b69380a032c41d4830c2403c6a81a60f85da571c4536ab7018d8da10f561b 0.0s done
-#29 exporting manifest list sha256:cea0ae19374f82c9f672732542f907ac1625e2255d93f58e3e90d9a8b118f536 done
+#29 exporting manifest sha256:c042f70d066032ed29851ab48d0d37b106fd7c8f72a1a1643217777b6ca09e65 0.0s done
+#29 exporting config sha256:acc46fd963b6192dc6a628b2747b56d0dfc7a260237dc0ebec34f96029fc0b06 done
+#29 exporting attestation manifest sha256:1ec98d01f7d1490ff753c21319fb37473a097728501a37fe7fd40d0f9de702b7 0.0s done
+#29 exporting manifest list sha256:06dd4e40ba15d73c0dfab39401e7ef1d2e252e349f79fa7fb064a2db4c1959b2 done
 #29 naming to docker.io/library/repo-api:latest done
 #29 unpacking to docker.io/library/repo-api:latest 0.0s done
 #29 DONE 0.2s
@@ -165,6 +169,6 @@ HEAD is now at 684fe32 v2.2: downloadable legacy supplier manuals in Support Hub
 Total reclaimed space: 0B
 + sleep 20
 + curl -sf http://localhost:8080/api/v1/health
-{"status":"ok","version":"2.0.0","db":"up","time":"2026-08-31T21:34:32.266Z"}DEPLOY OK
+{"status":"ok","version":"2.0.0","db":"up","time":"2026-09-01T02:31:07.243Z"}DEPLOY OK
 + echo 'DEPLOY OK'
 == ssh exit: 0 ==
