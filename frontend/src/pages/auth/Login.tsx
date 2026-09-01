@@ -50,7 +50,7 @@ export function AuthLogo() {
 }
 
 export default function Login() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { setSession } = useAuth();
   const { toast } = useToast();
   const nav = useNavigate();
@@ -92,7 +92,9 @@ export default function Login() {
       <div className="auth-photo">
         <div className="caption">
           <h2>OASIS v2</h2>
-          <p>Oyu Advanced Supplier Integrated System — нийлүүлэгчийн бүртгэл, тендер, үнэлгээ, гэрээний нэгдсэн систем.</p>
+          <p>{lang === 'en'
+            ? 'AI-powered Supplier Integrated System — supplier registration, tendering, evaluation and contract management on one platform.'
+            : 'AI-powered Supplier Integrated System — нийлүүлэгчийн бүртгэл, тендер, үнэлгээ, гэрээний нэгдсэн платформ.'}</p>
         </div>
       </div>
       <div className="auth-panel">
