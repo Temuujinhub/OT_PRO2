@@ -441,7 +441,7 @@ function AuctionPanel({ tenderId, t, lang, toast }: any) {
       </div>
       {a.i_won && <div className="banner" style={{ background: 'var(--green-light)', color: 'var(--green)', borderColor: '#bfe3c9' }}>{t('you_won')}</div>}
       {a.status === 'live' && (
-        <div className="row mb16">
+        <div className="filters mb16">
           <input type="number" placeholder={`≤ ${fmtMoney(st.nextMaxBid)}`} style={{ maxWidth: 220 }} value={amount} onChange={e => setAmount(e.target.value)} />
           <button className="btn" onClick={async () => {
             try {

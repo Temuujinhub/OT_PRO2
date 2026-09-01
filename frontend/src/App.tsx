@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
 import { get, post, setToken, getToken, setAuthFailHandler } from './api';
 import { useLang } from './i18n';
+import { Icon } from './icons';
 import { useToast } from './ui';
 
 import Login from './pages/auth/Login';
@@ -67,7 +68,7 @@ function NavItem({ to, ico, color, label, badge }: any) {
   const active = loc.pathname === to || (!isRoot && loc.pathname.startsWith(to + '/'));
   return (
     <div className={`nav-item ${active ? 'active' : ''}`} onClick={() => nav(to)}>
-      <div className="ico" style={{ background: color }}>{ico}</div>
+      <span className="ico"><Icon name={ico} size={18} /></span>
       <span style={{ flex: 1 }}>{label}</span>
       {badge > 0 && <span className="chip orange">{badge}</span>}
     </div>
@@ -85,50 +86,50 @@ function Shell({ children }: any) {
     <div className="shell">
       <div className={`sidebar ${open ? 'open' : ''}`} onClick={() => setOpen(false)}>
         <div className="brand">
-          <img src="/ot-logo.png" alt="Оюу Толгой" />
+          <img src="/ot-logo.svg" alt="Оюу Толгой" width={36} height={36} />
           <div><div className="t1">Оюу Толгой</div><div className="t2">OASIS v2 — Supplier System</div></div>
         </div>
         <div className="nav">
           {isSupplier ? (<>
-            <NavItem to="/supplier" ico="▦" color="var(--purple)" label={t('nav_dashboard')} />
-            <NavItem to="/supplier/profile" ico="🏢" color="var(--blue)" label={t('nav_profile')} />
-            <NavItem to="/supplier/qualification" ico="✓" color="var(--green)" label={t('nav_qualification')} />
-            <NavItem to="/supplier/tenders" ico="📋" color="var(--orange)" label={t('nav_tenders')} />
-            <NavItem to="/supplier/messages" ico="💬" color="var(--teal)" label={t('nav_messages')} />
-            <NavItem to="/supplier/notifications" ico="🔔" color="var(--pink)" label={t('nav_notifications')} badge={unread} />
-            <NavItem to="/supplier/catalogue" ico="🗂" color="var(--amber)" label={t('nav_catalogue')} />
-            <NavItem to="/supplier/kpi" ico="📈" color="var(--purple)" label={t('nav_kpi')} />
-            <NavItem to="/supplier/surveys" ico="📝" color="var(--blue)" label={t('nav_surveys')} />
-            <NavItem to="/supplier/support" ico="🛟" color="var(--teal)" label={t('nav_support')} />
+            <NavItem to="/supplier" ico="dashboard" color="var(--purple)" label={t('nav_dashboard')} />
+            <NavItem to="/supplier/profile" ico="building" color="var(--blue)" label={t('nav_profile')} />
+            <NavItem to="/supplier/qualification" ico="badge" color="var(--green)" label={t('nav_qualification')} />
+            <NavItem to="/supplier/tenders" ico="clipboard" color="var(--orange)" label={t('nav_tenders')} />
+            <NavItem to="/supplier/messages" ico="chat" color="var(--teal)" label={t('nav_messages')} />
+            <NavItem to="/supplier/notifications" ico="bell" color="var(--pink)" label={t('nav_notifications')} badge={unread} />
+            <NavItem to="/supplier/catalogue" ico="box" color="var(--amber)" label={t('nav_catalogue')} />
+            <NavItem to="/supplier/kpi" ico="chart" color="var(--purple)" label={t('nav_kpi')} />
+            <NavItem to="/supplier/surveys" ico="survey" color="var(--blue)" label={t('nav_surveys')} />
+            <NavItem to="/supplier/support" ico="lifebuoy" color="var(--teal)" label={t('nav_support')} />
           </>) : (<>
-            <NavItem to="/admin" ico="▦" color="var(--purple)" label={t('nav_dashboard')} />
+            <NavItem to="/admin" ico="dashboard" color="var(--purple)" label={t('nav_dashboard')} />
             <div className="nav-sect">Procurement</div>
-            <NavItem to="/admin/tenders" ico="📋" color="var(--orange)" label={t('nav_tender_mgmt')} />
-            <NavItem to="/admin/approvals" ico="✍️" color="var(--green)" label={t('nav_approvals')} />
+            <NavItem to="/admin/tenders" ico="clipboard" color="var(--orange)" label={t('nav_tender_mgmt')} />
+            <NavItem to="/admin/approvals" ico="check" color="var(--green)" label={t('nav_approvals')} />
             <div className="nav-sect">Suppliers</div>
-            <NavItem to="/admin/suppliers" ico="🏢" color="var(--blue)" label={t('nav_suppliers')} />
-            <NavItem to="/admin/qualification" ico="✓" color="var(--teal)" label={t('nav_qual_queue')} />
-            <NavItem to="/admin/dd" ico="🛡" color="var(--red)" label={t('nav_dd')} />
+            <NavItem to="/admin/suppliers" ico="building" color="var(--blue)" label={t('nav_suppliers')} />
+            <NavItem to="/admin/qualification" ico="badge" color="var(--teal)" label={t('nav_qual_queue')} />
+            <NavItem to="/admin/dd" ico="shield" color="var(--red)" label={t('nav_dd')} />
             <div className="nav-sect">Operations</div>
-            <NavItem to="/admin/reports" ico="📊" color="var(--pink)" label={t('nav_reports')} />
-            <NavItem to="/admin/messages" ico="💬" color="var(--teal)" label={t('nav_messages')} />
-            <NavItem to="/admin/support" ico="🛟" color="var(--amber)" label={t('nav_support_admin')} />
+            <NavItem to="/admin/reports" ico="chart" color="var(--pink)" label={t('nav_reports')} />
+            <NavItem to="/admin/messages" ico="chat" color="var(--teal)" label={t('nav_messages')} />
+            <NavItem to="/admin/support" ico="lifebuoy" color="var(--amber)" label={t('nav_support_admin')} />
             <div className="nav-sect">System</div>
-            <NavItem to="/admin/users" ico="👥" color="var(--blue)" label={t('nav_users')} />
-            <NavItem to="/admin/masterdata" ico="⚙️" color="var(--ink-soft)" label={t('nav_masterdata')} />
-            <NavItem to="/admin/integrations" ico="🔌" color="var(--green)" label={t('nav_integrations')} />
-            <NavItem to="/admin/translations" ico="🌐" color="var(--purple)" label={t('nav_translations')} />
-            <NavItem to="/admin/audit" ico="🧾" color="var(--ink)" label={t('nav_audit')} />
+            <NavItem to="/admin/users" ico="users" color="var(--blue)" label={t('nav_users')} />
+            <NavItem to="/admin/masterdata" ico="settings" color="var(--ink-soft)" label={t('nav_masterdata')} />
+            <NavItem to="/admin/integrations" ico="plug" color="var(--green)" label={t('nav_integrations')} />
+            <NavItem to="/admin/translations" ico="globe" color="var(--purple)" label={t('nav_translations')} />
+            <NavItem to="/admin/audit" ico="file" color="var(--ink)" label={t('nav_audit')} />
           </>)}
         </div>
         <div className="foot">
-          <span className="logout" onClick={logout}>⏻ {t('logout')}</span>
-          version 2.0 · {user.email}
+          <span className="logout" onClick={logout}><Icon name="power" size={15} /> {t('logout')}</span>
+          <div className="foot-meta">{user.email}<br />OASIS v2.0</div>
         </div>
       </div>
       <div className="main">
         <div className="topbar">
-          <button className="burger" onClick={() => setOpen(o => !o)}>☰</button>
+          <button className="burger" onClick={() => setOpen(o => !o)} aria-label="Меню"><Icon name="menu" size={20} /></button>
           <div className="crumb">
             {isSupplier ? (org ? `${org.name_mn}${org.vendor_no ? ' · ' + org.vendor_no : ''}` : '') : `${user.name} · ${user.role}`}
           </div>
@@ -138,12 +139,13 @@ function Shell({ children }: any) {
               <option value="en">🇬🇧 EN</option>
             </select>
           </div>
-          <Link to={isSupplier ? '/supplier/notifications' : '/admin/messages'} style={{ position: 'relative', fontSize: 18 }}>
-            🔔{unread > 0 && <span className="chip orange" style={{ position: 'absolute', top: -6, right: -12, padding: '0 6px' }}>{unread}</span>}
+          <Link to={isSupplier ? '/supplier/notifications' : '/admin/messages'} className="icon-btn" aria-label="Мэдэгдэл">
+            <Icon name="bell" size={18} />
+            {unread > 0 && <span className="icon-btn-badge">{unread > 99 ? '99+' : unread}</span>}
           </Link>
         </div>
         <div className="content">
-          {banner && <div className="banner">⚠️ {banner}</div>}
+          {banner && <div className="banner">{banner}</div>}
           {children}
         </div>
       </div>

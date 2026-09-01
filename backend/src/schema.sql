@@ -722,3 +722,7 @@ CREATE TABLE IF NOT EXISTS audit_event (
 );
 CREATE INDEX IF NOT EXISTS idx_audit_entity ON audit_event(entity_type, entity_id, occurred_at);
 CREATE INDEX IF NOT EXISTS idx_audit_time ON audit_event(occurred_at);
+
+-- ===================== IN-PLACE MIGRATIONS ============================
+-- Idempotent column additions for databases created by an earlier schema.
+ALTER TABLE catalogue_item ADD COLUMN IF NOT EXISTS image_attachment_id INT;

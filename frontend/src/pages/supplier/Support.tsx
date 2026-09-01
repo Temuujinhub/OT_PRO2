@@ -69,7 +69,7 @@ export default function Support() {
               </div>
             </Card>
           )}
-          <div className="row mb16">
+          <div className="filters mb16">
             <button className={`btn sm ${cat === '' ? '' : 'sec'}`} onClick={() => setCat('')}>{t('all')}</button>
             {CATS.map(c => <button key={c} className={`btn sm ${cat === c ? '' : 'sec'}`} onClick={() => setCat(c)}>{c}</button>)}
             <input placeholder={t('search')} style={{ maxWidth: 220 }} value={search} onChange={e => setSearch(e.target.value)}

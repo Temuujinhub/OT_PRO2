@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get, post, fmtMoney } from '../../api';
 import { useLang } from '../../i18n';
+import { Icon } from '../../icons';
 import { useAuth } from '../../App';
 import { Card, Spinner, useToast, Tabs, Field, StatusChip, Empty } from '../../ui';
 
@@ -119,23 +120,23 @@ export default function AdmComparison() {
 
       {tab === 'grid' && (
         <>
-          <div className="row mb16">
+          <div className="filters mb16">
             <label className="checkbox"><input type="checkbox" checked={flt.excludeAlt} onChange={e => setFlt({ ...flt, excludeAlt: e.target.checked })} /> {lang === 'mn' ? 'Alternative хасах' : 'Exclude alternatives'}</label>
             <label className="checkbox"><input type="checkbox" checked={flt.hasDatasheet} onChange={e => setFlt({ ...flt, hasDatasheet: e.target.checked })} /> {lang === 'mn' ? 'Datasheet-тэй' : 'Has datasheet'}</label>
-            <button className="btn teal sm" onClick={selectAllLowest}>⚡ {t('lowest_price')} {lang === 'mn' ? 'бүгдийг сонгох' : 'select all'}</button>
+            <button className="btn teal sm" onClick={selectAllLowest}>{t('lowest_price')} {lang === 'mn' ? 'бүгдийг сонгох' : 'select all'}</button>
             <button className="btn sec sm" onClick={() => setSel({})}>{lang === 'mn' ? 'Цэвэрлэх' : 'Clear'}</button>
           </div>
           {!d.grid.length ? <Empty text={lang === 'mn' ? 'Санал ирээгүй' : 'No bids'} /> : (
             <Card tight>
-              <div className="table-wrap" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                <table className="tbl">
+              <div className="table-wrap rfq-wrap">
+                <table className="tbl rfq">
                   <thead>
                     <tr>
-                      <th style={{ minWidth: 200 }}>{t('items')}</th>
+                      <th className="rfq-stick">{t('items')}</th>
                       {d.grid.map((g: any) => (
-                        <th key={g.response.id} style={{ minWidth: 170 }}>
-                          {g.response.org_name}
-                          <div className="mut" style={{ textTransform: 'none' }}>v{g.response.revision_no} · <StatusChip s={g.response.status} /></div>
+                        <th key={g.response.id} className="rfq-sup">
+                          <div className="rfq-sup-name">{g.response.org_name}</div>
+                          <div className="rfq-sup-meta">v{g.response.revision_no} <StatusChip s={g.response.status} /></div>
                         </th>
                       ))}
                     </tr>
@@ -143,33 +144,45 @@ export default function AdmComparison() {
                   <tbody>
                     {d.items.map((it: any) => (
                       <tr key={it.id}>
-                        <td>
-                          <div className="bold">{it.line_no}. {it.description}</div>
-                          <div className="mut">{Number(it.quantity)} {it.uom} {it.datasheet_required && '· DS📎'}</div>
+                        <td className="rfq-stick wrap">
+                          <div className="rfq-item">
+                            <div className="rfq-item-no">{it.line_no}</div>
+                            <div>
+                              <div className="bold">{it.description}</div>
+                              <div className="mut">
+                                {Number(it.quantity)} {it.uom}
+                                {it.datasheet_required && <span className="rfq-ds"><Icon name="file" size={12} /> Datasheet</span>}
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         {d.grid.map((g: any) => {
                           const qts = quoteFor(g, it.id);
-                          if (!qts.length) return <td key={g.response.id} className="mut">—</td>;
+                          if (!qts.length) return <td key={g.response.id} className="rfq-none">—</td>;
                           return (
                             <td key={g.response.id}>
                               {qts.map((qt: any) => {
                                 const isLowest = qt.total_mnt !== null && Math.abs(qt.total_mnt - lowestByItem[it.id]) < 0.01;
                                 const isSel = sel[it.id]?.quoteId === qt.id;
                                 return (
-                                  <div key={qt.id} className={isLowest ? 'hl-best' : ''}
-                                    style={{ padding: 6, borderRadius: 8, marginBottom: 4, cursor: 'pointer', outline: isSel ? '2px solid var(--orange)' : '1px solid var(--line)' }}
+                                  <button type="button" key={qt.id}
+                                    className={`quote${isLowest ? ' best' : ''}${isSel ? ' sel' : ''}`}
+                                    aria-pressed={isSel}
                                     onClick={() => selectQuote(it.id, g, qt)}>
-                                    <div className="row between">
-                                      <span className="bold">{fmtMoney(qt.unit_price, qt.currency)}</span>
-                                      {isSel && <span className="chip orange">✓</span>}
-                                    </div>
-                                    <div className="mut">{t('total')}: {fmtMoney(qt.total_mnt)} MNT{qt.is_alternative ? ' · ALT' : ''}</div>
-                                    <div className="mut">
-                                      {qt.lead_time_value ? `${qt.lead_time_value}d` : ''} {qt.incoterm || ''}
-                                      {Number(qt.negotiated_delta) !== 0 && <span style={{ color: 'var(--green)' }}> Δ{fmtMoney(qt.negotiated_delta)}</span>}
-                                      {qt.datasheet_attachment_id && ' 📎'}
-                                    </div>
-                                  </div>
+                                    <span className="quote-top">
+                                      <span className="quote-price">{fmtMoney(qt.unit_price, qt.currency)}</span>
+                                      {isSel && <Icon name="check" size={15} />}
+                                    </span>
+                                    <span className="quote-total">{fmtMoney(qt.total_mnt)} MNT</span>
+                                    <span className="quote-meta">
+                                      {qt.is_alternative && <span className="tag">ALT</span>}
+                                      {isLowest && <span className="tag best-tag">{lang === 'mn' ? 'Хамгийн бага' : 'Lowest'}</span>}
+                                      {qt.lead_time_value ? <span>{qt.lead_time_value}d</span> : null}
+                                      {qt.incoterm ? <span>{qt.incoterm}</span> : null}
+                                      {Number(qt.negotiated_delta) !== 0 && <span className="delta">Δ{fmtMoney(qt.negotiated_delta)}</span>}
+                                      {qt.datasheet_attachment_id && <Icon name="file" size={12} />}
+                                    </span>
+                                  </button>
                                 );
                               })}
                             </td>
@@ -183,9 +196,10 @@ export default function AdmComparison() {
             </Card>
           )}
           <div className="sel-summary">
-            <span>✓ {t('selected')}: {Object.keys(sel).length}/{d.items.length} items</span>
-            <span className="bold" style={{ fontSize: 16 }}>{fmtMoney(selTotal)} MNT</span>
-            <span className="mut" style={{ color: '#cbd5e1' }}>{lang === 'mn' ? 'Мөр дээр дарж сонгоно' : 'Click a quote to select'}</span>
+            <span className="sel-count">{t('selected')}: <b>{Object.keys(sel).length}</b> / {d.items.length}</span>
+            <span className="sel-sep" />
+            <span className="sel-total">{fmtMoney(selTotal)} <span className="cur">MNT</span></span>
+            <span className="sel-hint">{lang === 'mn' ? 'Үнийн санал дээр дарж сонгоно' : 'Click a quote to select'}</span>
           </div>
         </>
       )}

@@ -72,3 +72,12 @@ export function hoursLeft(d: any): number | null {
   if (!d) return null;
   return Math.round((new Date(d).getTime() - Date.now()) / 36e5);
 }
+
+/** Fetch a protected file as an object URL (the download route needs the JWT header). */
+export async function blobUrl(path: string): Promise<string | null> {
+  try {
+    const res: Response = await api(path, { raw: true });
+    if (!res.ok) return null;
+    return URL.createObjectURL(await res.blob());
+  } catch { return null; }
+}

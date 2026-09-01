@@ -18,19 +18,19 @@ export default function AdmDashboard() {
       <p className="mut mb16">{mn ? 'Дотоод удирдлагын самбар' : 'Internal operations dashboard'}</p>
 
       <div className="grid g4 mb16">
-        <StatCard icon="🏢" color="var(--blue)" value={d.suppliers.total} label={mn ? 'Нийт нийлүүлэгч' : 'Total suppliers'}
+        <StatCard icon="building" color="var(--blue)" value={d.suppliers.total} label={mn ? 'Нийт нийлүүлэгч' : 'Total suppliers'}
           sub={`${mn ? 'шинэ 30 хоног' : 'new 30d'}: ${d.suppliers.new_30d}`} />
-        <StatCard icon="⏳" color="var(--amber)" value={d.suppliers.pending_review} label={t('pending_review')} />
-        <StatCard icon="📋" color="var(--orange)" value={d.tenders.open} label={mn ? 'Нээлттэй тендер' : 'Open tenders'}
+        <StatCard icon="survey" color="var(--amber)" value={d.suppliers.pending_review} label={t('pending_review')} />
+        <StatCard icon="clipboard" color="var(--orange)" value={d.tenders.open} label={mn ? 'Нээлттэй тендер' : 'Open tenders'}
           sub={`${mn ? 'удахгүй хаагдах' : 'closing soon'}: ${d.tenders.closing_soon}`} />
-        <StatCard icon="✍️" color="var(--green)" value={d.approvals.length} label={mn ? 'Хүлээгдэж буй зөвшөөрөл' : 'Pending approvals'} />
+        <StatCard icon="check" color="var(--green)" value={d.approvals.length} label={mn ? 'Хүлээгдэж буй зөвшөөрөл' : 'Pending approvals'} />
       </div>
       <div className="grid g4 mb16">
-        <StatCard icon="🧪" color="var(--teal)" value={d.quals.submitted + d.quals.screening} label={mn ? 'Үнэлгээ хянагдаж буй' : 'Qualifications in review'} />
-        <StatCard icon="⚖️" color="var(--purple)" value={d.tenders.evaluating} label={mn ? 'Үнэлгээний шатанд' : 'In evaluation'} />
-        <StatCard icon="🎫" color="var(--pink)" value={d.support.open} label={mn ? 'Нээлттэй тасалбар' : 'Open tickets'}
+        <StatCard icon="badge" color="var(--teal)" value={d.quals.submitted + d.quals.screening} label={mn ? 'Үнэлгээ хянагдаж буй' : 'Qualifications in review'} />
+        <StatCard icon="chart" color="var(--purple)" value={d.tenders.evaluating} label={mn ? 'Үнэлгээний шатанд' : 'In evaluation'} />
+        <StatCard icon="lifebuoy" color="var(--pink)" value={d.support.open} label={mn ? 'Нээлттэй тасалбар' : 'Open tickets'}
           sub={d.support.breached ? `⚠ SLA: ${d.support.breached}` : undefined} />
-        <StatCard icon="🔐" color="var(--red)" value={d.security.failed_logins_24h} label={mn ? 'Амжилтгүй нэвтрэлт (24ц)' : 'Failed logins (24h)'}
+        <StatCard icon="shield" color="var(--red)" value={d.security.failed_logins_24h} label={mn ? 'Амжилтгүй нэвтрэлт (24ц)' : 'Failed logins (24h)'}
           sub={`${mn ? 'түгжигдсэн' : 'locked'}: ${d.security.locked_accounts}`} />
       </div>
 
@@ -55,13 +55,16 @@ export default function AdmDashboard() {
           </div>
         </Card>
         <Card title={mn ? 'Сарын бүртгэл' : 'Monthly registrations'}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 130, padding: '10px 4px' }}>
+          <div className="bar-chart">
             {d.monthly.map((m: any) => {
               const max = Math.max(...d.monthly.map((x: any) => x.c), 1);
               return (
-                <div key={m.month} style={{ flex: 1, textAlign: 'center' }}>
-                  <div style={{ background: 'var(--orange)', borderRadius: 4, height: `${m.c / max * 100}px`, minHeight: 4 }} title={`${m.month}: ${m.c}`} />
-                  <div className="mut" style={{ fontSize: 9, marginTop: 3 }}>{m.month.slice(5)}</div>
+                <div key={m.month} className="bar-slot">
+                  <div className="bar-col" title={`${m.month}: ${m.c}`}>
+                    <span className="bar-val">{m.c}</span>
+                    <div className="bar" style={{ height: `${Math.max(4, m.c / max * 120)}px` }} />
+                  </div>
+                  <div className="bar-lbl">{m.month.slice(5)}</div>
                 </div>
               );
             })}
@@ -70,7 +73,7 @@ export default function AdmDashboard() {
       </div>
 
       <div className="grid g2">
-        <Card title={`⚡ ${t('my_actions')}`}>
+        <Card title={t('my_actions')}>
           {d.myActions.length ? d.myActions.map((a: any) => (
             <div key={a.id} className="row between" style={{ marginBottom: 8, cursor: 'pointer' }} onClick={() => nav('/admin/approvals')}>
               <div><div className="bold">{a.label}</div><div className="mut">{a.stage_name}</div></div>

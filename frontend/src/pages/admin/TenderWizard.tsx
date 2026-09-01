@@ -116,7 +116,12 @@ export default function AdmTenderWizard() {
       {!isEditable && <div className="banner">{lang === 'mn' ? 'Нийтлэгдсэн тендер засварлагдахгүй' : 'Published tenders are immutable'}</div>}
       <div className="wizard-steps">
         {STEPS.map((s, i) => (
-          <div key={s} className={`wstep ${i === step ? 'active' : i < step ? 'done' : ''}`} onClick={() => tenderId && setStep(i)}>{i + 1}. {t(s)}</div>
+          <button type="button" key={s} className={`wstep ${i === step ? 'active' : i < step ? 'done' : ''}`}
+            disabled={!tenderId && i > 0} aria-current={i === step ? 'step' : undefined}
+            onClick={() => tenderId && setStep(i)}>
+            <span className="wstep-dot">{i < step ? '✓' : i + 1}</span>
+            <span className="wstep-label">{t(s)}</span>
+          </button>
         ))}
       </div>
 
@@ -265,7 +270,7 @@ export default function AdmTenderWizard() {
 
       {step === 4 && (
         <Card title={t('wizard_recipients')}>
-          <div className="row mb16">
+          <div className="filters mb16">
             <select style={{ maxWidth: 220 }} value={rf.category_id || ''} onChange={e => setRf({ ...rf, category_id: e.target.value ? Number(e.target.value) : undefined })}>
               <option value="">{t('categories')}: {t('all')}</option>
               {md.categories.map((c: any) => <option key={c.id} value={c.id}>{c.code} · {c.name_mn}</option>)}

@@ -49,7 +49,7 @@ export default function AdmTranslations() {
           <button className="btn" disabled={!Object.keys(edits).length} onClick={save}>{t('save')} ({Object.keys(edits).length})</button>
         </div>
       </div>
-      <div className="row mb16">
+      <div className="filters mb16">
         <input placeholder={t('search')} style={{ maxWidth: 240 }} value={search} onChange={e => setSearch(e.target.value)} />
         <input placeholder={lang === 'mn' ? 'Шинэ түлхүүр (жишээ: home.title)' : 'New key (e.g. home.title)'} style={{ maxWidth: 240 }} value={newKey} onChange={e => setNewKey(e.target.value)} />
         <button className="btn sec sm" disabled={!newKey} onClick={() => {

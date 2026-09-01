@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { get, put, post, del, uploadFile } from '../../api';
 import { useLang } from '../../i18n';
 import { useAuth } from '../../App';
-import { Card, Field, Tabs, useToast, StatusChip, Progress, DataTable, Modal, Spinner, Empty } from '../../ui';
+import { Card, Field, Tabs, useToast, StatusChip, Progress, DataTable, Modal, Spinner, Empty, FileDrop } from '../../ui';
 
 export default function SupProfile() {
   const { t, lang } = useLang();
@@ -240,7 +240,12 @@ export default function SupProfile() {
               <Field label={t('issued_on')}><input type="date" value={mf.issued_on || ''} onChange={e => setMf({ ...mf, issued_on: e.target.value })} /></Field>
               <Field label={t('expires_on')}><input type="date" value={mf.expires_on || ''} onChange={e => setMf({ ...mf, expires_on: e.target.value })} /></Field>
             </div>
-            <Field label={`${t('upload')} (PDF, max 30MB)`}><input type="file" accept=".pdf,.png,.jpg,.docx" onChange={e => setMf({ ...mf, file: e.target.files?.[0] })} /></Field>
+            <Field label={t('upload')}>
+              <FileDrop accept=".pdf,.png,.jpg,.jpeg,.docx" maxMb={30}
+                value={mf.file ? { name: mf.file.name, size: mf.file.size } : null}
+                onClear={() => setMf({ ...mf, file: undefined })}
+                onFile={(f) => setMf((m: any) => ({ ...m, file: f }))} />
+            </Field>
           </>}
           <div className="actions">
             <button className="btn sec" onClick={() => setModal(null)}>{t('cancel')}</button>

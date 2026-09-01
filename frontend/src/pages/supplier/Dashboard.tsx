@@ -22,10 +22,10 @@ export default function SupDashboard() {
       <p className="mut mb16">{d.org.name_mn} · <StatusChip s={d.org.status} /></p>
 
       <div className="grid g4 mb16">
-        <StatCard icon="📋" color="var(--orange)" value={totalInvited} label={lang === 'mn' ? 'Нийт уригдсан тендер' : 'Total invited tenders'} />
-        <StatCard icon="⏳" color="var(--teal)" value={open} label={lang === 'mn' ? 'Нээлттэй тендер' : 'Open tenders'} />
-        <StatCard icon="✅" color="var(--green)" value={responded} label={t('responded')} />
-        <StatCard icon="🏆" color="var(--purple)" value={d.awards.filter((a: any) => a.status === 'awarded').length} label="Award" />
+        <StatCard icon="clipboard" color="var(--orange)" value={totalInvited} label={lang === 'mn' ? 'Нийт уригдсан тендер' : 'Total invited tenders'} />
+        <StatCard icon="clipboard" color="var(--teal)" value={open} label={lang === 'mn' ? 'Нээлттэй тендер' : 'Open tenders'} />
+        <StatCard icon="check" color="var(--green)" value={responded} label={t('responded')} />
+        <StatCard icon="badge" color="var(--purple)" value={d.awards.filter((a: any) => a.status === 'awarded').length} label="Award" />
       </div>
 
       <div className="grid g3 mb16">
