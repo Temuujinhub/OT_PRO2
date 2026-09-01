@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { get, post, fmtDate, fmtMoney } from '../../api';
 import { useLang } from '../../i18n';
 import { useAuth } from '../../App';
-import { Card, Tabs, StatusChip, Spinner, useToast, Empty, Modal, Field, ConfirmModal, Countdown } from '../../ui';
+import { Card, Tabs, StatusChip, Spinner, useToast, Empty, Modal, Field, ConfirmModal, Countdown, RiskChip } from '../../ui';
 
 export default function AdmTenderOverview() {
   const { id } = useParams();
@@ -125,7 +125,7 @@ export default function AdmTenderOverview() {
                   <td className="bold">{i.org_name || `✉ ${i.external_email}`}<div className="mut">{i.registry_no}</div></td>
                   <td><StatusChip s={i.status} /></td>
                   <td>{i.bid_status ? <StatusChip s={i.bid_status} /> : '—'}</td>
-                  <td>{i.risk_level ? <span className={`chip ${i.risk_level === 'high' ? 'red' : i.risk_level === 'medium' ? 'amber' : 'green'}`}>{i.risk_level}</span> : '—'}</td>
+                  <td>{i.risk_level ? <RiskChip r={i.risk_level} /> : '—'}</td>
                 </tr>
               ))}
             </tbody>

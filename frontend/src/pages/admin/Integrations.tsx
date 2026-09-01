@@ -73,7 +73,7 @@ export default function AdmIntegrations() {
               <Card key={r.code} className="mb0">
                 <div className="row between">
                   <div className="row">
-                    <div className="ic" style={{ background: CAT_META[cat]?.color, width: 38, height: 38, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: '#fff' }}>
+                    <div className="ic" style={{ background: CAT_META[cat]?.color, width: 38, height: 38, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: '#fff' }}>
                       {CAT_META[cat]?.icon}
                     </div>
                     <div>
@@ -103,7 +103,7 @@ export default function AdmIntegrations() {
                 <div className="row end" style={{ marginTop: 10 }}>
                   {isAdmin && <button className="btn sec sm" onClick={() => setEdit({ ...r, newApiKey: '' })}>{t('edit')}</button>}
                   <button className="btn teal sm" disabled={testing === r.code} onClick={() => test(r.code)}>
-                    {testing === r.code ? t('generating') : `⚡ ${t('test_connection')}`}
+                    {testing === r.code ? t('generating') : t('test_connection')}
                   </button>
                 </div>
               </Card>

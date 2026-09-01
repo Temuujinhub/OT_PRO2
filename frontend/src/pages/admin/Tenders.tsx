@@ -31,7 +31,7 @@ export default function AdmTenders() {
         <h1>{t('nav_tender_mgmt')}</h1>
         <button className="btn" onClick={() => nav('/admin/tenders/new')}>+ {t('create_tender')}</button>
       </div>
-      <div className="row mb16">
+      <div className="filters mb16">
         <select style={{ maxWidth: 190 }} value={status} onChange={e => setStatus(e.target.value)}>
           <option value="">{t('all')} ({t('status')})</option>
           {['draft', 'pending_approval', 'published', 'closed', 'in_evaluation', 'negotiation', 'award_pending', 'awarded', 'cancelled'].map(s => <option key={s} value={s}>{s}</option>)}

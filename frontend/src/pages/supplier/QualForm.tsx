@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get, put, post, uploadFile } from '../../api';
 import { useLang, useL } from '../../i18n';
-import { Card, Field, Spinner, StatusChip, useToast, Progress, ConfirmModal } from '../../ui';
+import { Card, Field, Spinner, StatusChip, useToast, Progress, ConfirmModal, FileDrop } from '../../ui';
 
 export default function SupQualForm() {
   const { id } = useParams();
@@ -126,17 +126,18 @@ export default function SupQualForm() {
                   </select>
                 )}
                 {(qq.evidence_required || qq.qtype === 'attachment') && editable && (
-                  <div style={{ marginTop: 6 }}>
-                    <input type="file" onChange={async e => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      try {
+                  <div style={{ marginTop: 8 }}>
+                    <FileDrop
+                      accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
+                      maxMb={10}
+                      value={a.attachment_id ? { name: a.attachment_name || (lang === 'mn' ? 'Хавсаргасан файл' : 'Attached file') } : null}
+                      onClear={() => setAns(qq.id, { attachment_id: null, attachment_name: null })}
+                      onFile={async (file) => {
                         const att = await uploadFile(file, 'qualification', data.submission.id);
-                        setAns(qq.id, { attachment_id: att.id });
-                        toast(`📎 ${file.name}`, 'ok');
-                      } catch (err: any) { toast(err.code === 'file_too_large' ? 'Max 10MB' : err.code, 'err'); }
-                    }} />
-                    {a.attachment_id && <span className="chip green">📎 {lang === 'mn' ? 'хавсаргасан' : 'attached'}</span>}
+                        setAns(qq.id, { attachment_id: att.id, attachment_name: file.name });
+                        toast(file.name, 'ok');
+                      }}
+                    />
                   </div>
                 )}
               </Field>

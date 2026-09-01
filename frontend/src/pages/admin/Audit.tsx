@@ -19,7 +19,7 @@ export default function AdmAudit() {
     <>
       <h1>{t('nav_audit')}</h1>
       <p className="mut mb16">{lang === 'mn' ? 'Append-only аудит лог — устгах эрх ямар ч role-д байхгүй.' : 'Append-only audit log — no role can delete entries.'}</p>
-      <div className="row mb16">
+      <div className="filters mb16">
         <select style={{ maxWidth: 180 }} value={f.entity_type || ''} onChange={e => setF({ ...f, entity_type: e.target.value })}>
           <option value="">{t('all')} (entity)</option>
           {['user', 'organization', 'tender', 'bid', 'approval', 'award', 'qualification', 'dd_case', 'attachment', 'report', 'setting'].map(x => <option key={x}>{x}</option>)}

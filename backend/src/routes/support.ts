@@ -231,10 +231,11 @@ r.post('/catalogue', requireAuth, async (req, res) => {
   const b = req.body || {};
   if (!b.name) return bad(res, 'name_required');
   const row = (await q(
-    `INSERT INTO catalogue_item(organization_id, name, category_id, manufacturer, part_no, origin_country, description, certifications, unit_price, currency, uom)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+    `INSERT INTO catalogue_item(organization_id, name, category_id, manufacturer, part_no, origin_country, description, certifications, unit_price, currency, uom, image_attachment_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
     [req.user!.orgId, b.name, b.category_id || null, b.manufacturer || null, b.part_no || null, b.origin_country || null,
-     b.description || null, b.certifications || null, b.unit_price || null, b.currency || 'MNT', b.uom || 'EA']))[0];
+     b.description || null, b.certifications || null, b.unit_price || null, b.currency || 'MNT', b.uom || 'EA',
+     b.image_attachment_id || null]))[0];
   res.json(row);
 });
 
