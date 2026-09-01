@@ -171,17 +171,19 @@ r.get('/my/scores', requireSupplier, async (req, res) => {
 
 // ============ ADMIN SIDE — supplier management (spec 8.3) ============
 r.get('/', requireInternal, async (req, res) => {
-  const { status, residency, search, risk } = req.query as any;
+  const { status, residency, search, risk, category } = req.query as any;
   const cond: string[] = ['1=1']; const params: any[] = [];
   if (status) { params.push(status); cond.push(`o.status=$${params.length}`); }
   if (residency) { params.push(residency); cond.push(`o.residency=$${params.length}`); }
   if (risk) { params.push(risk); cond.push(`o.risk_level=$${params.length}`); }
+  if (category) { params.push(Number(category)); cond.push(`EXISTS (SELECT 1 FROM org_category oc2 WHERE oc2.organization_id=o.id AND oc2.category_id=$${params.length})`); }
   if (search) { params.push(`%${search}%`); cond.push(`(o.name_mn ILIKE $${params.length} OR o.name_en ILIKE $${params.length} OR o.registry_no ILIKE $${params.length} OR o.vendor_no ILIKE $${params.length})`); }
   const rows = await q(
     `SELECT o.*, (SELECT count(*) FROM bid_response br WHERE br.organization_id=o.id AND br.status='submitted') AS submitted_bids,
        (SELECT string_agg(DISTINCT qs.status, ',') FROM qual_submission qs WHERE qs.organization_id=o.id) AS qual_statuses,
        (SELECT count(*) FROM org_restriction rr WHERE rr.organization_id=o.id AND rr.active) AS restrictions,
-       (SELECT full_name FROM org_contact c WHERE c.organization_id=o.id AND c.contact_type='primary' LIMIT 1) AS primary_contact
+       (SELECT full_name FROM org_contact c WHERE c.organization_id=o.id AND c.contact_type='primary' LIMIT 1) AS primary_contact,
+       (SELECT string_agg(rc.code, ', ' ORDER BY rc.code) FROM org_category oc3 JOIN ref_category rc ON rc.id=oc3.category_id WHERE oc3.organization_id=o.id) AS category_codes
      FROM organization o WHERE ${cond.join(' AND ')} ORDER BY o.updated_at DESC LIMIT 500`, params);
   res.json(rows);
 });

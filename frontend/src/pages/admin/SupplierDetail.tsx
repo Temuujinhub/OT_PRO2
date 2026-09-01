@@ -88,6 +88,15 @@ export default function AdmSupplierDetail() {
             </tbody></table>
           </Card>
           <div>
+            <Card title={t('categories')}>
+              {d.categories?.length ? (
+                <div className="row" style={{ gap: 6 }}>
+                  {d.categories.map((c: any) => (
+                    <span key={c.id} className="chip orange">{c.code} · {lang === 'en' ? (c.name_en || c.name_mn) : c.name_mn}</span>
+                  ))}
+                </div>
+              ) : <Empty icon="🏷" text={lang === 'mn' ? 'Ангилал сонгоогүй' : 'No categories selected'} />}
+            </Card>
             <Card title={t('team')}>
               {d.contacts.map((c: any) => (
                 <div key={c.id} className="row between" style={{ marginBottom: 6 }}>
