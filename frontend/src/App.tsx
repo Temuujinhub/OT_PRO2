@@ -86,7 +86,7 @@ function Shell({ children }: any) {
     <div className="shell">
       <div className={`sidebar ${open ? 'open' : ''}`} onClick={() => setOpen(false)}>
         <div className="brand">
-          <img src="/ot-logo.svg" alt="Оюу Толгой" width={36} height={36} />
+          <img src="/ot-mark.png" alt="Оюу Толгой" width={36} height={36} />
           <div><div className="t1">Оюу Толгой</div><div className="t2">OASIS v2 — Supplier System</div></div>
         </div>
         <div className="nav">

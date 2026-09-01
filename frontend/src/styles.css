@@ -506,7 +506,11 @@ table.tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size
 @media (max-width: 900px) { .auth-photo { display: none; } .auth-panel { width: 100%; padding: var(--sp-6) var(--sp-5) var(--sp-9); } }
 
 .auth-panel .logo { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-6); }
-.auth-panel .logo img { width: 48px; height: 48px; object-fit: contain; }
+.auth-panel .logo img {
+  width: 48px; height: 48px; object-fit: contain; box-sizing: border-box;
+  background: #fff; border-radius: var(--r-md); padding: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.28);
+}
 .auth-panel .logo div { color: #fff; font-weight: var(--fw-bold); font-size: var(--fs-16); line-height: 1.2; letter-spacing: -.01em; }
 .auth-panel .logo div span { font-size: var(--fs-11); color: #8AA3B6; font-weight: var(--fw-regular); display: block; letter-spacing: .04em; margin-top: 3px; text-transform: uppercase; }
 .auth-panel h1 { font-size: var(--fs-24); margin-bottom: var(--sp-2); color: #fff; font-weight: var(--fw-semibold); letter-spacing: -.015em; }

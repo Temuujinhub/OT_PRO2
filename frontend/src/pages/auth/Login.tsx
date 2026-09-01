@@ -43,7 +43,7 @@ const IcoAlert = () => (
 export function AuthLogo() {
   return (
     <div className="logo">
-      <img src="/ot-logo.svg" alt="Оюу Толгой" width={48} height={48} />
+      <img src="/ot-mark.png" alt="Оюу Толгой" width={48} height={48} />
       <div>Оюу Толгой<span>Supplier System · OASIS v2</span></div>
     </div>
   );
