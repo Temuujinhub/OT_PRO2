@@ -63,6 +63,9 @@ r.post('/:tenderId(\\d+)/evaluations/:etype', async (req, res) => {
     return res.status(403).json({ error: 'buyer_role_required' });
 
   const { selections, recommendation, submit } = req.body || {};
+  // selections must be a list — a malformed body must not reach the loop below
+  if (selections !== undefined && selections !== null && !Array.isArray(selections))
+    return bad(res, 'invalid_selections', 'selections must be an array');
   // mandatory recommendation on submit (DEF-13 control)
   if (submit && (!recommendation || String(recommendation).trim().length < 20))
     return bad(res, 'recommendation_required', 'Зөвлөмжийн тайлбар доод тал нь 20 тэмдэгт байх ёстой');

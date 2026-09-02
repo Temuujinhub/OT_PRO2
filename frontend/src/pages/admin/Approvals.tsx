@@ -56,7 +56,7 @@ export default function AdmApprovals() {
                   <td><span className="chip purple">{r.entity_type}</span> <span className="bold">{r.entity_label}</span></td>
                   <td className="num">{r.amount ? fmtMoney(r.amount, r.currency) : '—'}
                     {r.converted_amount && <div className="mut">≈ {fmtMoney(r.converted_amount)} USD @{Number(r.rate).toFixed(2)}</div>}</td>
-                  <td>{r.stage_no}/{'?'} {r.stage_name}</td>
+                  <td>{r.stage_no}/{r.total_stages} {r.stage_name}</td>
                   <td>{r.assignee_name}</td>
                   <td className="num">{r.age_hours}h</td>
                   <td>{r.overdue ? <span className="chip red">{t('overdue')}</span> : fmtDate(r.due_at, true)}</td>
@@ -122,7 +122,19 @@ export default function AdmApprovals() {
               </span>
             </div>
           ))}
-          {detail.approval.status === 'pending' && (
+          {(() => {
+            const cur = (detail.stages || []).find((s: any) => s.status === 'pending');
+            const isMine = !!cur && (cur.assignee_id === user.id || user.role === 'SystemAdmin');
+            if (detail.approval.status === 'pending' && !isMine) return (
+              <div className="banner mt16">
+                {lang === 'mn'
+                  ? `Энэ шат ${cur?.assignee_name || '—'}-д хуваарилагдсан тул та шийдвэрлэх боломжгүй.`
+                  : `This stage is assigned to ${cur?.assignee_name || '—'}, so you cannot decide on it.`}
+              </div>
+            );
+            return null;
+          })()}
+          {detail.approval.status === 'pending' && ((detail.stages || []).find((s: any) => s.status === 'pending')?.assignee_id === user.id || user.role === 'SystemAdmin') && (
             <div className="actions">
               <select style={{ maxWidth: 200 }} value={delegateTo} onChange={e => setDelegateTo(e.target.value)}>
                 <option value="">{t('delegate')}...</option>

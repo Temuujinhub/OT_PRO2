@@ -831,3 +831,50 @@ table.rfq { border-collapse: separate; border-spacing: 0; }
 .viewtoggle button + button { border-left: 1px solid var(--border-default); }
 .viewtoggle button:hover { background: var(--n-50); color: var(--n-700); }
 .viewtoggle button.on { background: var(--brand-50); color: var(--brand-700); }
+
+/* ---------------------------------------------------------------------------
+   22. SYSTEM HEALTH CHECK
+   --------------------------------------------------------------------------- */
+.hc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.hc-dot.ok   { background: var(--success-500); }
+.hc-dot.warn { background: var(--warning-500); }
+.hc-dot.fail { background: var(--danger-500); }
+
+.hc-banner {
+  display: flex; align-items: center; gap: var(--sp-4);
+  border: 1px solid var(--border-default); border-left-width: 4px;
+  border-radius: var(--r-lg); background: var(--bg-surface);
+  padding: var(--sp-4) var(--sp-5); margin-bottom: var(--sp-4); box-shadow: var(--e-1);
+}
+.hc-banner.ok   { border-left-color: var(--success-500); }
+.hc-banner.warn { border-left-color: var(--warning-500); }
+.hc-banner.fail { border-left-color: var(--danger-500); }
+.hc-banner > .hc-dot { width: 10px; height: 10px; }
+.hc-banner-txt { display: flex; flex-direction: column; gap: 3px; }
+.hc-banner-txt b { font-size: var(--fs-16); font-weight: var(--fw-semibold); }
+.hc-banner-txt span { font-size: var(--fs-12); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.hc-bar { margin-left: auto; display: flex; width: 220px; height: 8px; border-radius: var(--r-full); overflow: hidden; background: var(--n100); }
+.hc-bar .seg.ok { background: var(--success-500); }
+.hc-bar .seg.warn { background: var(--warning-500); }
+.hc-bar .seg.fail { background: var(--danger-500); }
+
+.hc-card { padding: 0; overflow: hidden; }
+.hc-head { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-4) var(--sp-5); border-bottom: 1px solid var(--border-default); }
+.hc-head h2 { flex: 1; font-size: var(--fs-14); }
+.hc-ico { width: 28px; height: 28px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hc-ico.ok   { background: var(--success-50); color: var(--success-600); }
+.hc-ico.warn { background: var(--warning-50); color: var(--warning-700); }
+.hc-ico.fail { background: var(--danger-50);  color: var(--danger-600); }
+
+.hc-list { list-style: none; margin: 0; padding: 0; }
+.hc-list li { display: flex; align-items: flex-start; gap: var(--sp-3); padding: var(--sp-3) var(--sp-5); border-top: 1px solid var(--border-default); }
+.hc-list li:first-child { border-top: 0; }
+.hc-list li > .hc-dot { margin-top: 6px; }
+.hc-list li.warn { background: #FFFCF5; }
+.hc-list li.fail { background: #FFF8F8; }
+.hc-l { flex: 1; min-width: 0; }
+.hc-name { font-size: var(--fs-13); color: var(--n700); line-height: 1.4; }
+.hc-detail { font-size: var(--fs-11); color: var(--text-secondary); line-height: 1.45; margin-top: 3px; }
+.hc-val { font-size: var(--fs-12); font-weight: var(--fw-semibold); color: var(--n800);
+  font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; max-width: 46%; }
+.hc-empty { padding: var(--sp-5); text-align: center; color: var(--text-secondary); font-size: var(--fs-13); }

@@ -29,7 +29,7 @@ const D: Dict = {
   nav_tender_mgmt: ['Тендер удирдлага', 'Tender management'], nav_approvals: ['Зөвшөөрөл', 'Approvals'],
   nav_dd: ['DD / COI', 'DD / COI'], nav_reports: ['Тайлан', 'Reports'], nav_users: ['Хэрэглэгчид', 'Users'],
   nav_masterdata: ['Мастер дата', 'Master data'], nav_translations: ['Орчуулга', 'Translations'],
-  nav_audit: ['Аудит лог', 'Audit log'], nav_support_admin: ['Дэмжлэг', 'Support'],
+  nav_audit: ['Аудит лог', 'Audit log'], nav_health: ['Системийн эрүүл мэнд', 'System health'], nav_support_admin: ['Дэмжлэг', 'Support'],
   nav_integrations: ['Интеграц', 'Integrations'],
   test_connection: ['Холболт шалгах', 'Test connection'], last_test: ['Сүүлийн шалгалт', 'Last test'],
   enabled: ['Идэвхтэй', 'Enabled'], disabled_st: ['Идэвхгүй', 'Disabled'],

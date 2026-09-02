@@ -39,6 +39,7 @@ import AdmMasterData from './pages/admin/MasterData';
 import AdmIntegrations from './pages/admin/Integrations';
 import AdmTranslations from './pages/admin/Translations';
 import AdmAudit from './pages/admin/Audit';
+import AdmHealth from './pages/admin/Health';
 import AdmSupport from './pages/admin/Support';
 import AdmComms from './pages/admin/Comms';
 
@@ -120,6 +121,8 @@ function Shell({ children }: any) {
             <NavItem to="/admin/integrations" ico="plug" color="var(--green)" label={t('nav_integrations')} />
             <NavItem to="/admin/translations" ico="globe" color="var(--purple)" label={t('nav_translations')} />
             <NavItem to="/admin/audit" ico="file" color="var(--ink)" label={t('nav_audit')} />
+            {['SystemAdmin', 'Auditor'].includes(user.role) &&
+              <NavItem to="/admin/health" ico="shield" color="var(--green)" label={t('nav_health')} />}
           </>)}
         </div>
         <div className="foot">
@@ -227,6 +230,7 @@ function AppRoutes() {
         <Route path="/admin/integrations" element={<Protected internal><AdmIntegrations /></Protected>} />
         <Route path="/admin/translations" element={<Protected internal><AdmTranslations /></Protected>} />
         <Route path="/admin/audit" element={<Protected internal><AdmAudit /></Protected>} />
+        <Route path="/admin/health" element={<Protected internal><AdmHealth /></Protected>} />
         <Route path="/admin/support" element={<Protected internal><AdmSupport /></Protected>} />
         <Route path="/admin/messages" element={<Protected internal><AdmComms /></Protected>} />
         <Route path="/admin/messages/:id" element={<Protected internal><AdmComms /></Protected>} />

@@ -70,6 +70,7 @@ r.put('/my/submission/:id/answers', requireSupplier, async (req, res) => {
   if (!sub) return res.status(404).json({ error: 'not_found' });
   if (!['draft', 'needs_improvement'].includes(sub.status)) return bad(res, 'immutable_after_submit');
   const answers: any[] = req.body?.answers || [];
+  if (!Array.isArray(answers)) return bad(res, 'invalid_answers', 'answers must be an array');
   for (const a of answers) {
     await q(
       `INSERT INTO qual_answer(submission_id, question_id, value_text, value_number, value_date, value_bool, value_options, attachment_id)

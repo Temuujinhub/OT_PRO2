@@ -17,6 +17,7 @@ import commsRoutes from './routes/comms';
 import supportRoutes from './routes/support';
 import reportRoutes from './routes/reports';
 import adminRoutes from './routes/admin';
+import healthRoutes from './routes/health';
 import dashboardRoutes from './routes/dashboard';
 import fileRoutes from './routes/files';
 
@@ -51,6 +52,7 @@ app.use('/api/v1/dd', ddRoutes);
 app.use('/api/v1/comms', commsRoutes);
 app.use('/api/v1/support', supportRoutes);
 app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/admin/health', healthRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/files', fileRoutes);

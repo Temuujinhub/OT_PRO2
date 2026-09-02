@@ -202,6 +202,7 @@ r.put('/:id(\\d+)/items', requireInternal, requireRole(...BUYER_ROLES), async (r
   if (!t) return res.status(404).json({ error: 'not_found' });
   if (!['draft', 'pending_approval'].includes(t.status)) return bad(res, 'immutable_after_publish');
   const items: any[] = req.body?.items || [];
+  if (!Array.isArray(items)) return bad(res, 'invalid_items', 'items must be an array');
   const errors: any[] = [];
   items.forEach((it, idx) => {
     const line = idx + 1;

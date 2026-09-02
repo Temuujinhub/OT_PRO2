@@ -133,6 +133,7 @@ r.get('/translations', async (_req, res) => {
 
 r.put('/translations', requireRole('SystemAdmin', 'ContentAdmin'), async (req, res) => {
   const items: any[] = req.body?.items || [];
+  if (!Array.isArray(items)) return bad(res, 'invalid_items', 'items must be an array');
   for (const it of items) {
     if (!it.key || !it.lang) continue;
     await q(`INSERT INTO translation(key, lang, value) VALUES ($1,$2,$3) ON CONFLICT (key, lang) DO UPDATE SET value=$3`,

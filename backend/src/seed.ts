@@ -371,10 +371,22 @@ export async function seed() {
   await q(`INSERT INTO item_selection(evaluation_id, tender_item_id, organization_id, quote_id, selected_qty, amount, currency, justification)
            VALUES ($1,$2,$3,$4,100,$5,'MNT','Хамгийн сайн нэгж үнэ, DIFOT 96%')`,
     [ev3.id, fItem.id, org2, q2row.id, Number(q2row.total_price)]);
+  // The historical award went through a completed approval chain — reproduce that,
+  // otherwise it looks like an award that bypassed governance.
+  const award3Appr = (await q(
+    `INSERT INTO approval_instance(entity_type, entity_id, status, current_stage, total_stages, amount, currency,
+       converted_amount, requested_by, created_at, completed_at)
+     VALUES ('award',$1,'approved',2,2,285000000,'MNT',285000000,$2, now() - interval '27 days', now() - interval '25 days')
+     RETURNING id`, [rfq3.id, uid['buyer2@oasis.mn']]))[0];
+  for (const [no, who] of [[1, 'approver@oasis.mn'], [2, 'approver2@oasis.mn']] as [number, string][]) {
+    await q(`INSERT INTO approval_stage(approval_id, stage_no, stage_name, assignee_id, status, decided_at, decision_reason, decided_by)
+             VALUES ($1,$2,$3,$4,'approved', now() - interval '25 days','Батлав',$4)`,
+      [award3Appr.id, no, `Stage ${no}`, uid[who]]);
+  }
   const award3 = (await q(
-    `INSERT INTO award(tender_id, version_no, status, total_amount, currency, issued_by, issued_at, letter_text)
-     VALUES ($1,1,'issued',285000000,'MNT',$2, now() - interval '25 days','OASIS AWARD LETTER — RFQ-2026-00004') RETURNING id`,
-    [rfq3.id, uid['buyer2@oasis.mn']]))[0];
+    `INSERT INTO award(tender_id, version_no, status, total_amount, currency, approval_id, issued_by, issued_at, letter_text)
+     VALUES ($1,1,'issued',285000000,'MNT',$2,$3, now() - interval '25 days','OASIS AWARD LETTER — RFQ-2026-00004') RETURNING id`,
+    [rfq3.id, award3Appr.id, uid['buyer2@oasis.mn']]))[0];
   await q(`INSERT INTO award_allocation(award_id, tender_item_id, organization_id, quote_id, quantity, amount, currency)
            VALUES ($1,$2,$3,$4,100,285000000,'MNT')`, [award3.id, fItem.id, org2, q2row.id]);
   await q(`INSERT INTO regret_notice(award_id, organization_id, body) VALUES ($1,$2,'Regret letter — RFQ-2026-00004')`, [award3.id, org5]);
@@ -410,6 +422,13 @@ export async function seed() {
     [org1, uid['dd@oasis.mn']]);
   await q(`INSERT INTO dd_case(organization_id, source, risk_tier, status, analyst_id)
            VALUES ($1,'tender','high','screening',$2)`, [org5, uid['dd@oasis.mn']]);
+  // Bidders on the tender that is in evaluation must already be DD-cleared, otherwise the
+  // award gate (evaluation.ts) blocks the demo walkthrough before it reaches an approver.
+  for (const oid of [org3, org5]) {
+    await q(`INSERT INTO dd_case(organization_id, source, risk_tier, status, decision, decision_reason, analyst_id, decided_at, expires_on)
+             VALUES ($1,'award','low','decided','cleared','Шалгалтад эрсдэл илрээгүй.',$2, now() - interval '5 days','2027-06-30')`,
+      [oid, uid['dd@oasis.mn']]);
+  }
   await q(`INSERT INTO coi_declaration(user_id, tender_id, has_conflict, status) VALUES ($1,$2,false,'cleared')`,
     [uid['enduser@oasis.mn'], rfq2.id]);
 
