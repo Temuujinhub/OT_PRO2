@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      reset_demo_data:
+        description: 'DESTRUCTIVE — drop the database volume and re-seed demo data'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -25,6 +30,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           GH_TOKEN: ${{ github.token }}
+          RESET_DEMO_DATA: ${{ github.event.inputs.reset_demo_data }}
         run: |
           printf '%s\n' "$SSH_KEY" > /tmp/key
           chmod 600 /tmp/key
@@ -45,6 +51,13 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           printf 'JWT_SECRET=%s\nANTHROPIC_API_KEY=%s\nDB_PASSWORD=%s\n' "$JWT_SECRET" "$ANTHROPIC_API_KEY" "$DB_PASSWORD" > .env
+          # Only on an explicit manual run: wipe the database volume so demo data is
+          # rebuilt from the current seed. A normal push never touches the data.
+          if [ "$RESET_DEMO_DATA" = "true" ]; then
+            echo 'RESET_DEMO_DATA=true — dropping the database volume'
+            docker compose down
+            docker volume ls -q | grep -E 'dbdata' | xargs -r docker volume rm -f
+          fi
           docker compose up -d --build
           docker image prune -f
           sleep 20
